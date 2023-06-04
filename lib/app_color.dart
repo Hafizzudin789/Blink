@@ -9,7 +9,9 @@ const gray400Color = Color(0XFF8B8B8B);
 const primaryButtonColor = Color(0XFF3CB4E5);
 
 const borderColor = Color(0XFF3D3D3D);
+
 const pinkColor = Color(0XFFE53E51);
+const yellowColor = Color(0XFFFFE816);
 
 const shadowColor = Color(0XFFD1D1D1);
 
