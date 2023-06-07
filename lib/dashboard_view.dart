@@ -54,8 +54,8 @@ class _DashboardViewState extends State<DashboardView> {
         SizedBox(height: MediaQuery.of(context).size.height * 0.06),
         const Text("Total Balance", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: blackColor),),
         const SizedBox(height: 4),
-        RichText(
-          text: const TextSpan(
+        const Text.rich(
+          TextSpan(
             style: TextStyle(color: blackColor, fontSize: 24, fontWeight: FontWeight.w700),
             children: [
               TextSpan(
@@ -64,8 +64,7 @@ class _DashboardViewState extends State<DashboardView> {
               TextSpan(
                 text: " JOD",
                 style: TextStyle(color: gray300Color, fontSize: 12, fontWeight: FontWeight.w700),
-
-        ),
+              ),
             ]
           ),
         ),
@@ -183,8 +182,8 @@ class _DashboardViewState extends State<DashboardView> {
 
                           SizedBox(height: screenHeight*0.05),
 
-                          RichText(
-                            text: const TextSpan(
+                          const Text.rich(
+                            TextSpan(
                                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
                                 children: [
                                   TextSpan(
@@ -351,14 +350,14 @@ class _DashboardViewState extends State<DashboardView> {
                 const Expanded(child: SizedBox()),
 
 
-                Row(
+                const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        RichText(
-                          text: const TextSpan(
+                        Text.rich(
+                          TextSpan(
                               style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
                               children: [
                                 TextSpan(
@@ -372,9 +371,9 @@ class _DashboardViewState extends State<DashboardView> {
                               ]
                           ),
                         ),
-                        const SizedBox(height: 4),
-                        RichText(
-                          text: const TextSpan(
+                        SizedBox(height: 4),
+                        Text.rich(
+                           TextSpan(
                               style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: lightestPinkColor),
                               children: [
                                 TextSpan(
@@ -391,7 +390,7 @@ class _DashboardViewState extends State<DashboardView> {
                       ],
                     ),
 
-                    const CustomButton(
+                    CustomButton(
                       label: "Pay back",
                       buttonColor: primaryButtonColor,
                     ),
@@ -401,10 +400,10 @@ class _DashboardViewState extends State<DashboardView> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Column(
+                    const Column(
                       children: [
-                        RichText(
-                          text: const TextSpan(
+                        Text.rich(
+                          TextSpan(
                               style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
                               children: [
                                 TextSpan(
@@ -418,8 +417,8 @@ class _DashboardViewState extends State<DashboardView> {
                               ]
                           ),
                         ),
-                        const SizedBox(height: 4),
-                        const Text("AVAILABLE AMOUNT", style: TextStyle(color: lightestPinkColor, fontSize: 10, fontWeight: FontWeight.w600),),
+                        SizedBox(height: 4),
+                        Text("AVAILABLE AMOUNT", style: TextStyle(color: lightestPinkColor, fontSize: 10, fontWeight: FontWeight.w600),),
                       ],
                     ),
 

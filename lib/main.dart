@@ -1,6 +1,5 @@
 import 'package:blink/layout_view.dart';
 import 'package:flutter/material.dart';
-import 'dashboard_view.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,11 +15,12 @@ class MyApp extends StatelessWidget {
       title: 'Blink',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        fontFamily: "Montserrat",
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
         textTheme: const TextTheme(
           bodyMedium: TextStyle(
-            color: Colors.white
+            color: Colors.white,
           )
         )
       ),
