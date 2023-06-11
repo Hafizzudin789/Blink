@@ -11,20 +11,23 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Blink',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        fontFamily: "Montserrat",
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-        textTheme: const TextTheme(
-          bodyMedium: TextStyle(
-            color: Colors.white,
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: MaterialApp(
+        title: 'Blink',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          fontFamily: "Montserrat",
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+          textTheme: const TextTheme(
+            bodyMedium: TextStyle(
+              color: Colors.white,
+            )
           )
-        )
+        ),
+        home: const LayoutView(),
       ),
-      home: const LayoutView(),
     );
   }
 }

@@ -15,6 +15,8 @@ const lightPinkColor = Color(0XFFE74E5F);
 const pinkColor = Color(0XFFE53E51);
 const lightYellowColor = Color(0XFFFFED4E);
 const yellowColor = Color(0XFFFFE816);
+const darkRedColor = Color(0XFF890000);
 
 const shadowColor = Color(0XFFD1D1D1);
+const dividerColor = Color(0XFFF8F6FD);
 

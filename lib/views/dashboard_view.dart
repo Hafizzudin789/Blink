@@ -1,9 +1,10 @@
+import 'package:blink/views/transaction_view.dart';
 import 'package:blink/widgets/customPattern.dart';
 import 'package:flutter/material.dart';
-import 'app_color.dart';
-import 'custom_svg_image.dart';
-import 'widgets/custom_button.dart';
-import 'widgets/elevated_button.dart';
+import '../constant/app_color.dart';
+import '../widgets/custom_svg_image.dart';
+import '../widgets/custom_button.dart';
+import '../widgets/elevated_button.dart';
 import 'dart:math' as math;
 
 class DashboardView extends StatefulWidget {
@@ -449,11 +450,6 @@ class _DashboardViewState extends State<DashboardView> {
             ),
           ),
         ),
-        // const Positioned(
-        //   left: 0,
-        //   right: 0,
-        //   child: SVGImage(assetPath: "assets/card2Curve.svg"),
-        // ),
 
         ///Button
         Positioned(
@@ -472,9 +468,12 @@ class _DashboardViewState extends State<DashboardView> {
         ),
 
         ///Transactions button
-        const Positioned(
+        Positioned(
           bottom: 20,
           child: ElevatedCustomButton(
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const TransactionView()));
+            },
             label: "Transactions",
             buttonColor: Colors.white,
             foregroundColor: primaryButtonColor,

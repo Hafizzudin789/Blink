@@ -1,5 +1,5 @@
-import 'package:blink/custom_svg_image.dart';
-import 'package:blink/dashboard_view.dart';
+import 'package:blink/widgets/custom_svg_image.dart';
+import 'package:blink/views/dashboard_view.dart';
 import 'package:flutter/material.dart';
 
 class LayoutView extends StatefulWidget {

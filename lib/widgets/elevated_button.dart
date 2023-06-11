@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../app_color.dart';
+import '../constant/app_color.dart';
 
 class ElevatedCustomButton extends StatelessWidget {
   final String label;
