@@ -217,7 +217,7 @@ class _DashboardViewState extends State<DashboardView> {
                           const Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Text("JOD120315314513451341234567312", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),),
+                              Expanded(child: Text("JOD120315314513451341234567312", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),maxLines: 1, overflow: TextOverflow.ellipsis,)),
                               SizedBox(width: 8),
                               SVGImage(assetPath: "assets/icons/copyPaste.svg"),
                             ],
@@ -267,11 +267,11 @@ class _DashboardViewState extends State<DashboardView> {
             ),
           ),
         ),
-        Positioned(
-          right: horizontalSpacing+60,
-          top: 36,
-          child: const SVGImage(assetPath: 'assets/card1Curve.svg'),
-        ),
+        // Positioned(
+        //   right: horizontalSpacing+60,
+        //   top: 36,
+        //   child: const SVGImage(assetPath: 'assets/card1Curve.svg'),
+        // ),
 
         ///Button
         Positioned(
@@ -313,141 +313,147 @@ class _DashboardViewState extends State<DashboardView> {
             color: pinkColor,
             borderRadius: BorderRadius.circular(16),
           ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Row(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: CustomPaint(
+              painter: const CustomPatternCircleCreditCard(),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("My Credit Card", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),),
-                          SizedBox(height: 10),
-                          Align(alignment: Alignment.centerLeft, child: SVGImage(assetPath: "assets/appName.svg")),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      height: 50,
-                      width: 50,
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: pinkColor,
-                        border: Border.all(color: lightPinkColor),
-                        boxShadow: const [
-                          BoxShadow(color: Colors.black26, blurRadius: 10, spreadRadius: 0.1),
-                        ],
-                      ),
-                      child: const SVGImage(assetPath: "assets/icons/spin.svg",),
-                    ),
-                  ],
-                ),
-
-                const Expanded(child: SizedBox()),
-
-
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    Row(
                       children: [
-                        Text.rich(
-                          TextSpan(
-                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
-                              children: [
-                                TextSpan(
-                                    text: "148.09"
-                                ),
-                                TextSpan(
-                                  text: " JOD",
-                                  style: TextStyle(color: gray300Color, fontSize: 14, fontWeight: FontWeight.w700),
-
-                                ),
-                              ]
+                        const Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("My Credit Card", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),),
+                              SizedBox(height: 10),
+                              Align(alignment: Alignment.centerLeft, child: SVGImage(assetPath: "assets/appName.svg")),
+                            ],
                           ),
                         ),
-                        SizedBox(height: 4),
-                        Text.rich(
-                           TextSpan(
-                              style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: lightestPinkColor),
-                              children: [
-                                TextSpan(
-                                    text: "MIN. DUE BY"
-                                ),
-                                TextSpan(
-                                  text: " 27 NOV 2021",
-                                  style: TextStyle(color: Colors.white),
-
-                                ),
-                              ]
+                        Container(
+                          height: 50,
+                          width: 50,
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: pinkColor,
+                            border: Border.all(color: lightPinkColor),
+                            boxShadow: const [
+                              BoxShadow(color: Colors.black26, blurRadius: 10, spreadRadius: 0.1),
+                            ],
                           ),
+                          child: const SVGImage(assetPath: "assets/icons/spin.svg",),
                         ),
                       ],
                     ),
 
-                    CustomButton(
-                      label: "Pay back",
-                      buttonColor: primaryButtonColor,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Column(
-                      children: [
-                        Text.rich(
-                          TextSpan(
-                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
-                              children: [
-                                TextSpan(
-                                    text: "851.91"
-                                ),
-                                TextSpan(
-                                  text: " JOD",
-                                  style: TextStyle(color: gray300Color, fontSize: 14, fontWeight: FontWeight.w700),
+                    const Expanded(child: SizedBox()),
 
-                                ),
-                              ]
-                          ),
+
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text.rich(
+                              TextSpan(
+                                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                                  children: [
+                                    TextSpan(
+                                        text: "148.09"
+                                    ),
+                                    TextSpan(
+                                      text: " JOD",
+                                      style: TextStyle(color: gray300Color, fontSize: 14, fontWeight: FontWeight.w700),
+
+                                    ),
+                                  ]
+                              ),
+                            ),
+                            SizedBox(height: 4),
+                            Text.rich(
+                               TextSpan(
+                                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: lightestPinkColor),
+                                  children: [
+                                    TextSpan(
+                                        text: "MIN. DUE BY"
+                                    ),
+                                    TextSpan(
+                                      text: " 27 NOV 2021",
+                                      style: TextStyle(color: Colors.white),
+
+                                    ),
+                                  ]
+                              ),
+                            ),
+                          ],
                         ),
-                        SizedBox(height: 4),
-                        Text("AVAILABLE AMOUNT", style: TextStyle(color: lightestPinkColor, fontSize: 10, fontWeight: FontWeight.w600),),
+
+                        CustomButton(
+                          label: "Pay back",
+                          buttonColor: primaryButtonColor,
+                        ),
                       ],
                     ),
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Column(
+                          children: [
+                            Text.rich(
+                              TextSpan(
+                                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                                  children: [
+                                    TextSpan(
+                                        text: "851.91"
+                                    ),
+                                    TextSpan(
+                                      text: " JOD",
+                                      style: TextStyle(color: gray300Color, fontSize: 14, fontWeight: FontWeight.w700),
 
-                    Container(
-                      height: 50,
-                      width: 50,
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: pinkColor,
-                        border: Border.all(color: lightPinkColor),
-                        boxShadow: const [
-                          BoxShadow(color: Colors.black26, blurRadius: 10, spreadRadius: 0.1),
-                        ],
-                      ),
-                      child: const SVGImage(assetPath: "assets/icons/settings.svg"),
-                    ),
+                                    ),
+                                  ]
+                              ),
+                            ),
+                            SizedBox(height: 4),
+                            Text("AVAILABLE AMOUNT", style: TextStyle(color: lightestPinkColor, fontSize: 10, fontWeight: FontWeight.w600),),
+                          ],
+                        ),
+
+                        Container(
+                          height: 50,
+                          width: 50,
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: pinkColor,
+                            border: Border.all(color: lightPinkColor),
+                            boxShadow: const [
+                              BoxShadow(color: Colors.black26, blurRadius: 10, spreadRadius: 0.1),
+                            ],
+                          ),
+                          child: const SVGImage(assetPath: "assets/icons/settings.svg"),
+                        ),
+                      ],
+                    )
+
                   ],
-                )
-
-              ],
+                ),
+              ),
             ),
           ),
         ),
-        const Positioned(
-          left: 0,
-          right: 0,
-          child: SVGImage(assetPath: "assets/card2Curve.svg"),
-        ),
+        // const Positioned(
+        //   left: 0,
+        //   right: 0,
+        //   child: SVGImage(assetPath: "assets/card2Curve.svg"),
+        // ),
 
         ///Button
         Positioned(
@@ -533,7 +539,6 @@ class _DashboardViewState extends State<DashboardView> {
                       child: SizedBox(),
                     ),
 
-
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -556,8 +561,7 @@ class _DashboardViewState extends State<DashboardView> {
                           child: const SVGImage(assetPath: "assets/icons/settings.svg",),
                         ),
                       ],
-                    )
-
+                    ),
                   ],
                 ),
               ),
@@ -565,12 +569,6 @@ class _DashboardViewState extends State<DashboardView> {
           ),
         ),
 
-        // ///TODO: make in custom painter
-        // Positioned(
-        //   left: MediaQuery.of(context).size.width*0.28,
-        //   top: MediaQuery.of(context).size.height*0.38,
-        //   child: const SVGImage(assetPath: 'assets/card3Curve.svg'),
-        // ),
 
         ///Button
         Positioned(
