@@ -23,7 +23,7 @@ class _DebitCardState extends State<DebitCard> with SingleTickerProviderStateMix
     super.initState();
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 1),
+      duration: const Duration(milliseconds: 800),
     );
   }
 

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../constant/app_color.dart';
 import '../../../widgets/customPattern.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/custom_svg_image.dart';
 import '../../../widgets/elevated_button.dart';
 import 'dart:math' as math;
+import '../../navigation_transitions.dart';
 import '../../transaction_view.dart';
+import '../dashboard_view_model.dart';
 
 
 class CreditCard extends StatefulWidget {
@@ -18,15 +21,24 @@ class CreditCard extends StatefulWidget {
 class _CreditCardState extends State<CreditCard> with SingleTickerProviderStateMixin{
 
   late AnimationController _animationController;
+  late Animation<double> _animation;
 
   bool _showButtonsInCreditCard = true;
+
 
   @override
   void initState() {
     super.initState();
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 1),
+      duration: const Duration(milliseconds: 800),
+    );
+
+    _animation = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut, reverseCurve: Curves.easeInOut),
     );
   }
 
@@ -108,15 +120,7 @@ class _CreditCardState extends State<CreditCard> with SingleTickerProviderStateM
                             ),
                             InkWell(
                               onTap: () {
-                                if(!_animationController.isAnimating) {
-                                  _animationController.isDismissed
-                                      ? _animationController.forward()
-                                      : _animationController.reverse();
-
-                                  setState(() {
-                                    _showButtonsInCreditCard = !_showButtonsInCreditCard;
-                                  });
-                                }
+                                _rotate();
                               },
                               child: Container(
                                 height: 50,
@@ -136,7 +140,6 @@ class _CreditCardState extends State<CreditCard> with SingleTickerProviderStateM
                           ],
                         ),
 
-                        //Flexible(fit: FlexFit.loose,child: const SizedBox()),
 
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -255,16 +258,7 @@ class _CreditCardState extends State<CreditCard> with SingleTickerProviderStateM
                           ),
                           InkWell(
                             onTap: () {
-                              if(!_animationController.isAnimating) {
-                                _animationController.isDismissed
-                                    ? _animationController.forward()
-                                    : _animationController.reverse();
-
-                                setState(() {
-                                  _showButtonsInCreditCard = !_showButtonsInCreditCard;
-                                });
-                              }
-
+                              _rotate();
                             },
                             child: Container(
                               height: 50,
@@ -390,7 +384,8 @@ class _CreditCardState extends State<CreditCard> with SingleTickerProviderStateM
             return Transform(
               transform: Matrix4.identity()
                 ..setEntry(3, 2, 0.001)
-                ..rotateY(_animationController.value * -math.pi),
+                // ..rotateY(_animationController.value * -math.pi),
+                ..rotateY(_animation.value * -math.pi),
               alignment: Alignment.center,
               child: child,
             );
@@ -423,14 +418,15 @@ class _CreditCardState extends State<CreditCard> with SingleTickerProviderStateM
         Positioned(
           bottom: 20,
           child: AnimatedOpacity(
-            duration: const Duration(milliseconds: 800),
+            duration: const Duration(milliseconds: 500),
             opacity: _showButtonsInCreditCard
                 ? 1
                 : 0,
             child: ElevatedCustomButton(
               onTap: () {
                 if(_showButtonsInCreditCard) {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const TransactionView()));
+                  context.read<DashboardViewModel>().animateForward();
+                  Navigator.of(context).push(slideBottomToTop(nextPage: const TransactionView()));
                 }
               },
               label: "Transactions",
@@ -442,5 +438,25 @@ class _CreditCardState extends State<CreditCard> with SingleTickerProviderStateM
       ],
     );
   }
+
+  _rotate() {
+    if(!_animationController.isAnimating) {
+      _animationController.isDismissed
+          ? _animationController.forward()
+          : _animationController.reverse();
+      // if(_animationController.isCompleted) {
+      //   // _animationController.stop();
+      //   _animationController.value = 0;
+      //   _animationController.forward();
+      // }
+
+
+      setState(() {
+        _showButtonsInCreditCard = !_showButtonsInCreditCard;
+      });
+    }
+  }
+
+
 }
 

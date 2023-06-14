@@ -1,5 +1,7 @@
+import 'package:blink/views/dashboard/dashboard_view_model.dart';
 import 'package:blink/views/dashboard/widgets/credit_card.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../constant/app_color.dart';
 import 'dart:math' as math;
 
@@ -14,7 +16,7 @@ class DashboardView extends StatefulWidget {
   State<DashboardView> createState() => _DashboardViewState();
 }
 
-class _DashboardViewState extends State<DashboardView> with SingleTickerProviderStateMixin{
+class _DashboardViewState extends State<DashboardView> with TickerProviderStateMixin{
 
   int pageViewIndex = 0;
   List cards = [1,2,3]; ///Number of cards to horizontally scroll
@@ -22,30 +24,68 @@ class _DashboardViewState extends State<DashboardView> with SingleTickerProvider
   late PageController pageController;
 
 
+
   @override
   void initState() {
     super.initState();
     pageController = PageController(initialPage: pageViewIndex, viewportFraction: 0.8);
+
+    context.read<DashboardViewModel>().translateAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1000),
+
+    );
+
+    // context.read<DashboardViewModel>().animation = Tween<double>(
+    //   begin: 1,
+    //   end: 2,
+    // ).animate(CurvedAnimation(
+    //     parent: context.read<DashboardViewModel>().translateAnimationController,
+    //     curve: Curves.easeInOut
+    // ));
+
+    context.read<DashboardViewModel>().scaleAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+      lowerBound: 1,
+      upperBound: 2,
+    );
   }
 
   @override
   void dispose() {
     super.dispose();
     pageController.dispose();
+    context.read<DashboardViewModel>().disposeControllers();
   }
+
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _totalBalance(),
-            _pageViewWidget(),
-            _pageViewIndicator(),
-          ],
+      body: AnimatedBuilder(
+        animation: context.read<DashboardViewModel>().translateAnimationController,
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _totalBalance(),
+              _pageViewWidget(),
+              _pageViewIndicator(),
+            ],
+          ),
         ),
+        builder: (context, child) {
+          return Transform.translate(
+            offset: Offset(0, context.read<DashboardViewModel>().translateAnimationController.value* (-MediaQuery.of(context).size.height)),
+            child: Transform.scale(
+              scale: context.read<DashboardViewModel>().scaleAnimationController.value,
+              // scale: context.read<DashboardViewModel>().animation.value,
+              child: child,
+            ),
+          );
+        }
       ),
     );
   }
