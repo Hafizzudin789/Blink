@@ -19,4 +19,5 @@ const darkRedColor = Color(0XFF890000);
 
 const shadowColor = Color(0XFFD1D1D1);
 const dividerColor = Color(0XFFF8F6FD);
+const dividerColor1 = Color(0XFFEFEFF0);
 

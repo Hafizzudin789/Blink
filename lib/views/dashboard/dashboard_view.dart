@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../constant/app_color.dart';
 import 'dart:math' as math;
 
+import '../settings_view.dart';
 import 'widgets/debit_card.dart';
 import 'widgets/my_account_card.dart';
 
@@ -32,17 +33,18 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
 
     context.read<DashboardViewModel>().translateAnimationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1000),
-
+      duration: const Duration(milliseconds: 500),
+    );
+    context.read<DashboardViewModel>().animation = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(
+      CurvedAnimation(parent: context.read<DashboardViewModel>().translateAnimationController,
+          curve: Curves.easeInOut,
+          reverseCurve: Curves.easeInOut,
+      ),
     );
 
-    // context.read<DashboardViewModel>().animation = Tween<double>(
-    //   begin: 1,
-    //   end: 2,
-    // ).animate(CurvedAnimation(
-    //     parent: context.read<DashboardViewModel>().translateAnimationController,
-    //     curve: Curves.easeInOut
-    // ));
 
     context.read<DashboardViewModel>().scaleAnimationController = AnimationController(
       vsync: this,
@@ -50,6 +52,7 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
       lowerBound: 1,
       upperBound: 2,
     );
+
   }
 
   @override
@@ -63,29 +66,53 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
+    // return Scaffold(
+    //   body: AnimatedBuilder(
+    //       animation: context.read<DashboardViewModel>().translateAnimationController,
+    //       builder: (context, child) {
+    //         return SafeArea(
+    //           child: Column(
+    //             crossAxisAlignment: CrossAxisAlignment.stretch,
+    //             children: [
+    //               _totalBalance(),
+    //               _pageViewWidget(),
+    //               _pageViewIndicator(),
+    //             ],
+    //           ),
+    //         );
+    //       }
+    //   ),
+    // );
     return Scaffold(
-      body: AnimatedBuilder(
-        animation: context.read<DashboardViewModel>().translateAnimationController,
-        child: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _totalBalance(),
-              _pageViewWidget(),
-              _pageViewIndicator(),
-            ],
-          ),
-        ),
-        builder: (context, child) {
-          return Transform.translate(
-            offset: Offset(0, context.read<DashboardViewModel>().translateAnimationController.value* (-MediaQuery.of(context).size.height)),
-            child: Transform.scale(
-              scale: context.read<DashboardViewModel>().scaleAnimationController.value,
-              // scale: context.read<DashboardViewModel>().animation.value,
-              child: child,
+      body: Stack(
+        children: [
+          const SettingsView(),
+          AnimatedBuilder(
+            animation: context.read<DashboardViewModel>().translateAnimationController,
+            child: SafeArea(
+              child: Container(
+                color: Colors.white,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _totalBalance(),
+                    _pageViewWidget(),
+                    _pageViewIndicator(),
+                  ],
+                ),
+              ),
             ),
-          );
-        }
+            builder: (context, child) {
+              return Transform.translate(
+                offset: Offset(0, context.read<DashboardViewModel>().animation.value* (-MediaQuery.of(context).size.height*0.8)),
+                child: Transform.scale(
+                  scale: context.read<DashboardViewModel>().scaleAnimationController.value,
+                  child: child,
+                ),
+              );
+            }
+          ),
+        ],
       ),
     );
   }
@@ -119,13 +146,17 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
       child: PageView.builder(
         itemCount: 3,
         controller: pageController,
-        physics: const ClampingScrollPhysics(),
+        ///If settings page is active do not scroll horizontal (swipe)
+        physics: context.watch<DashboardViewModel>().settings
+            ? const NeverScrollableScrollPhysics()
+            : const ClampingScrollPhysics(),
         onPageChanged: (int value) {
           setState(() {
             pageViewIndex = value;
           });
         },
         itemBuilder: (context, index) {
+          ///Bit tilted semicircle
           return AnimatedBuilder(
             animation: pageController,
             builder: (context, child) {
@@ -148,8 +179,21 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
                     child: index == 0
                         ? const MyAccountCard()
                         : index == 1
-                          ? const CreditCard()
-                          : const DebitCard(),
+                            ? const CreditCard()
+                            : const DebitCard(),
+
+                    ///Go to Settings page animation
+                    ///Go to Transaction page animation
+                    // child: Transform.translate(
+                    //   offset: Offset(0, index == pageViewIndex
+                    //       ? context.read<DashboardViewModel>().translateAnimationController.value* (-MediaQuery.of(context).size.height)
+                    //       : 0),
+                    //   child: index == 0
+                    //       ? const MyAccountCard()
+                    //       : index == 1
+                    //         ? const CreditCard()
+                    //         : const DebitCard(),
+                    // ),
                   ),
                 ),
               );
@@ -162,30 +206,38 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
 
 
   _pageViewIndicator() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 16.0, bottom: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          ...cards.map(
-            (e) => Container(
-              height: pageViewIndex == cards.indexOf(e)
-                  ? 5
-                  : 4,
-              width: pageViewIndex == cards.indexOf(e)
-                  ? 5
-                  : 4,
-              margin: const EdgeInsets.symmetric(horizontal: 2),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: pageViewIndex == cards.indexOf(e)
-                    ? blackColor
-                    : gray400Color,
+    ///Hide indicator when settings page is active
+    return AnimatedCrossFade(
+      firstChild: const SizedBox(),
+      secondChild: Padding(
+        padding: const EdgeInsets.only(top: 16.0, bottom: 8),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ...cards.map(
+                  (e) => Container(
+                height: pageViewIndex == cards.indexOf(e)
+                    ? 5
+                    : 4,
+                width: pageViewIndex == cards.indexOf(e)
+                    ? 5
+                    : 4,
+                margin: const EdgeInsets.symmetric(horizontal: 2),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: pageViewIndex == cards.indexOf(e)
+                      ? blackColor
+                      : gray400Color,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
+      crossFadeState: context.watch<DashboardViewModel>().settings
+          ? CrossFadeState.showFirst
+          : CrossFadeState.showSecond,
+      duration: const Duration(milliseconds: 500),
     );
   }
 

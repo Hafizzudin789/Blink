@@ -4,7 +4,6 @@ import '../../../constant/app_color.dart';
 import '../../../widgets/customPattern.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/custom_svg_image.dart';
-import '../../../widgets/elevated_button.dart';
 import 'dart:math' as math;
 import '../../navigation_transitions.dart';
 import '../../transaction_view.dart';
@@ -20,8 +19,8 @@ class CreditCard extends StatefulWidget {
 
 class _CreditCardState extends State<CreditCard> with SingleTickerProviderStateMixin{
 
-  late AnimationController _animationController;
-  late Animation<double> _animation;
+  late AnimationController _cardRotationController;
+  late Animation<double> _cardRotationAnimation;
 
   bool _showButtonsInCreditCard = true;
 
@@ -29,23 +28,23 @@ class _CreditCardState extends State<CreditCard> with SingleTickerProviderStateM
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
+    _cardRotationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 800),
     );
 
-    _animation = Tween<double>(
+    _cardRotationAnimation = Tween<double>(
       begin: 0,
       end: 1,
     ).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut, reverseCurve: Curves.easeInOut),
+      CurvedAnimation(parent: _cardRotationController, curve: Curves.easeInOut, reverseCurve: Curves.easeInOut),
     );
   }
 
   @override
   void dispose() {
     super.dispose();
-    _animationController.dispose();
+    _cardRotationController.dispose();
   }
 
   @override
@@ -55,7 +54,7 @@ class _CreditCardState extends State<CreditCard> with SingleTickerProviderStateM
       alignment: Alignment.center,
       children: [
         AnimatedBuilder(
-          animation: _animationController,
+          animation: _cardRotationController,
           child: Container(
             margin: EdgeInsets.symmetric(horizontal: horizontalSpacing, vertical: 44),
             decoration: BoxDecoration(
@@ -63,60 +62,211 @@ class _CreditCardState extends State<CreditCard> with SingleTickerProviderStateM
               borderRadius: BorderRadius.circular(16),
             ),
             alignment: Alignment.center,
-            child: AnimatedCrossFade(
-              crossFadeState: _showButtonsInCreditCard
-                  ? CrossFadeState.showFirst
-                  : CrossFadeState.showSecond,
-              alignment: Alignment.center,
-              duration: const Duration(seconds: 1),
-              reverseDuration: const Duration(seconds: 1),
-              firstCurve: Curves.linearToEaseOut,
-              secondCurve: Curves.linearToEaseOut,
-              layoutBuilder: (Widget topChild, Key topChildKey, Widget bottomChild, Key bottomChildKey) {
-                return Stack(
-                  clipBehavior: Clip.none,
-                  children: <Widget>[
-                    Positioned(
-                      key: bottomChildKey,
-                      left: 0.0,
-                      top: 0.0,
-                      right: 0.0,
-                      bottom: 0,
-                      child: bottomChild,
+            ///Hide the card content when settings page is active
+            child: AnimatedOpacity(
+              duration: const Duration(milliseconds: 500),
+              opacity: context.watch<DashboardViewModel>().settings
+                  ? 0:1,
+              ///While rotating the card
+              ///Change the content of the card
+              child: AnimatedCrossFade(
+                crossFadeState: _showButtonsInCreditCard
+                    ? CrossFadeState.showFirst
+                    : CrossFadeState.showSecond,
+                alignment: Alignment.center,
+                duration: const Duration(milliseconds: 600),
+                reverseDuration: const Duration(milliseconds: 600),
+                firstCurve: Curves.easeInToLinear,
+                secondCurve: Curves.easeInToLinear,
+                sizeCurve: Curves.easeInToLinear,
+                layoutBuilder: (Widget topChild, Key topChildKey, Widget bottomChild, Key bottomChildKey) {
+                  return Stack(
+                    clipBehavior: Clip.none,
+                    children: <Widget>[
+                      Positioned(
+                        key: bottomChildKey,
+                        left: 0.0,
+                        top: 0.0,
+                        right: 0.0,
+                        bottom: 0,
+                        child: bottomChild,
+                      ),
+                      Positioned(
+                        key: topChildKey,
+                        left: 0.0,
+                        top: 0.0,
+                        right: 0.0,
+                        bottom: 0,
+                        child: topChild,
+                      ),
+                    ],
+                  );
+                },
+                firstChild: ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: CustomPaint(
+                    painter: const CustomPatternCircleCreditCard(),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              const Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("My Credit Card", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),),
+                                    SizedBox(height: 10),
+                                    Align(alignment: Alignment.centerLeft, child: SVGImage(assetPath: "assets/appName.svg")),
+                                  ],
+                                ),
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  _rotate();
+                                },
+                                child: Container(
+                                  height: 50,
+                                  width: 50,
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: pinkColor,
+                                    border: Border.all(color: lightPinkColor),
+                                    boxShadow: const [
+                                      BoxShadow(color: Colors.black26, blurRadius: 10, spreadRadius: 0.1),
+                                    ],
+                                  ),
+                                  child: const SVGImage(assetPath: "assets/icons/spin.svg",),
+                                ),
+                              ),
+                            ],
+                          ),
+
+
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              const Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text.rich(
+                                        TextSpan(
+                                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                                            children: [
+                                              TextSpan(
+                                                  text: "148.09"
+                                              ),
+                                              TextSpan(
+                                                text: " JOD",
+                                                style: TextStyle(color: gray300Color, fontSize: 14, fontWeight: FontWeight.w700),
+
+                                              ),
+                                            ]
+                                        ),
+                                      ),
+                                      SizedBox(height: 4),
+                                      Text.rich(
+                                        TextSpan(
+                                            style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: lightestPinkColor),
+                                            children: [
+                                              TextSpan(
+                                                  text: "MIN. DUE BY"
+                                              ),
+                                              TextSpan(
+                                                text: " 27 NOV 2021",
+                                                style: TextStyle(color: Colors.white),
+
+                                              ),
+                                            ]
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+
+                                  CustomButton(
+                                    label: "Pay back",
+                                    buttonColor: primaryButtonColor,
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 16),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text.rich(
+                                        TextSpan(
+                                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                                            children: [
+                                              TextSpan(
+                                                  text: "851.91"
+                                              ),
+                                              TextSpan(
+                                                text: " JOD",
+                                                style: TextStyle(color: gray300Color, fontSize: 14, fontWeight: FontWeight.w700),
+
+                                              ),
+                                            ]
+                                        ),
+                                      ),
+                                      SizedBox(height: 4),
+                                      Text("AVAILABLE AMOUNT", style: TextStyle(color: lightestPinkColor, fontSize: 10, fontWeight: FontWeight.w600),),
+                                    ],
+                                  ),
+
+                                  InkWell(
+                                    onTap: () {
+                                      context.read<DashboardViewModel>().showSettingPage(true);
+                                    },
+                                    child: Container(
+                                      height: 50,
+                                      width: 50,
+                                      padding: const EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: pinkColor,
+                                        border: Border.all(color: lightPinkColor),
+                                        boxShadow: const [
+                                          BoxShadow(color: Colors.black26, blurRadius: 10, spreadRadius: 0.1),
+                                        ],
+                                      ),
+                                      child: const SVGImage(assetPath: "assets/icons/settings.svg"),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+
+                        ],
+                      ),
                     ),
-                    Positioned(
-                      key: topChildKey,
-                      left: 0.0,
-                      top: 0.0,
-                      right: 0.0,
-                      bottom: 0,
-                      child: topChild,
-                    ),
-                  ],
-                );
-              },
-              firstChild: ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: CustomPaint(
-                  painter: const CustomPatternCircleCreditCard(),
+                  ),
+                ),
+                secondChild: Transform.flip(
+                  flipX: true,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("My Credit Card", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),),
-                                  SizedBox(height: 10),
-                                  Align(alignment: Alignment.centerLeft, child: SVGImage(assetPath: "assets/appName.svg")),
-                                ],
-                              ),
+                              child: Text("Zein Malhas", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),),
                             ),
                             InkWell(
                               onTap: () {
@@ -140,263 +290,126 @@ class _CreditCardState extends State<CreditCard> with SingleTickerProviderStateM
                           ],
                         ),
 
+                        const SizedBox(height: 16),
 
-                        Column(
+                        const Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.max,
+                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
                               children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text.rich(
-                                      TextSpan(
-                                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
-                                          children: [
-                                            TextSpan(
-                                                text: "148.09"
-                                            ),
-                                            TextSpan(
-                                              text: " JOD",
-                                              style: TextStyle(color: gray300Color, fontSize: 14, fontWeight: FontWeight.w700),
-
-                                            ),
-                                          ]
-                                      ),
-                                    ),
-                                    SizedBox(height: 4),
-                                    Text.rich(
-                                      TextSpan(
-                                          style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: lightestPinkColor),
-                                          children: [
-                                            TextSpan(
-                                                text: "MIN. DUE BY"
-                                            ),
-                                            TextSpan(
-                                              text: " 27 NOV 2021",
-                                              style: TextStyle(color: Colors.white),
-
-                                            ),
-                                          ]
-                                      ),
-                                    ),
-                                  ],
-                                ),
-
-                                CustomButton(
-                                  label: "Pay back",
-                                  buttonColor: primaryButtonColor,
-                                ),
+                                Flexible(child: Text("8451 1353 1245 3421", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),maxLines: 1, overflow: TextOverflow.ellipsis,)),
+                                SizedBox(width: 8),
+                                SVGImage(assetPath: "assets/icons/copyPaste.svg"),
                               ],
                             ),
-                            const SizedBox(height: 16),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text.rich(
-                                      TextSpan(
-                                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
-                                          children: [
-                                            TextSpan(
-                                                text: "851.91"
-                                            ),
-                                            TextSpan(
-                                              text: " JOD",
-                                              style: TextStyle(color: gray300Color, fontSize: 14, fontWeight: FontWeight.w700),
+                            Text("CARD NUMBER", style: TextStyle(color: lightestPinkColor, fontSize: 10, fontWeight: FontWeight.w600),),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        const Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("08/23", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),),
+                                  SizedBox(height: 4),
+                                  Text("EXPIRY DATE", style: TextStyle(color: lightestPinkColor, fontSize: 10, fontWeight: FontWeight.w600),),
+                                ],
+                              ),
+                            ),
 
-                                            ),
-                                          ]
-                                      ),
-                                    ),
-                                    SizedBox(height: 4),
-                                    Text("AVAILABLE AMOUNT", style: TextStyle(color: lightestPinkColor, fontSize: 10, fontWeight: FontWeight.w600),),
-                                  ],
-                                ),
-
-                                Container(
-                                  height: 50,
-                                  width: 50,
-                                  padding: const EdgeInsets.all(12),
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: pinkColor,
-                                    border: Border.all(color: lightPinkColor),
-                                    boxShadow: const [
-                                      BoxShadow(color: Colors.black26, blurRadius: 10, spreadRadius: 0.1),
-                                    ],
-                                  ),
-                                  child: const SVGImage(assetPath: "assets/icons/settings.svg"),
-                                ),
-                              ],
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("688", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),),
+                                  SizedBox(height: 4),
+                                  Text("CVV", style: TextStyle(color: lightestPinkColor, fontSize: 10, fontWeight: FontWeight.w600),),
+                                ],
+                              ),
                             ),
                           ],
                         ),
+
+                        const Divider(color: lightestPinkColor, thickness: 0.5, height: 64,),
+
+                        const Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text.rich(
+                              TextSpan(
+                                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+                                  children: [
+                                    TextSpan(
+                                        text: "232.48"
+                                    ),
+                                    TextSpan(
+                                      text: " JOD",
+                                      style: TextStyle(color: gray300Color, fontSize: 10, fontWeight: FontWeight.w700),
+
+                                    ),
+                                  ]
+                              ),
+                            ),
+                            SizedBox(height: 4),
+                            Text("TOTAL USED AMOUNT", style: TextStyle(color: lightestPinkColor, fontSize: 10, fontWeight: FontWeight.w600),),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        const Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text.rich(
+                              TextSpan(
+                                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+                                  children: [
+                                    TextSpan(
+                                        text: "1,000.00"
+                                    ),
+                                    TextSpan(
+                                      text: " JOD",
+                                      style: TextStyle(color: gray300Color, fontSize: 10, fontWeight: FontWeight.w700),
+
+                                    ),
+                                  ]
+                              ),
+                            ),
+                            SizedBox(height: 4),
+                            Text("YOUR CARD LIMIT", style: TextStyle(color: lightestPinkColor, fontSize: 10, fontWeight: FontWeight.w600),),
+                          ],
+                        ),
+
 
                       ],
                     ),
                   ),
                 ),
               ),
-              secondChild: Transform.flip(
-                flipX: true,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Expanded(
-                            child: Text("Zein Malhas", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              _rotate();
-                            },
-                            child: Container(
-                              height: 50,
-                              width: 50,
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: pinkColor,
-                                border: Border.all(color: lightPinkColor),
-                                boxShadow: const [
-                                  BoxShadow(color: Colors.black26, blurRadius: 10, spreadRadius: 0.1),
-                                ],
-                              ),
-                              child: const SVGImage(assetPath: "assets/icons/spin.svg",),
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(height: 16),
-
-                      const Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Flexible(child: Text("8451 1353 1245 3421", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),maxLines: 1, overflow: TextOverflow.ellipsis,)),
-                              SizedBox(width: 8),
-                              SVGImage(assetPath: "assets/icons/copyPaste.svg"),
-                            ],
-                          ),
-                          Text("CARD NUMBER", style: TextStyle(color: lightestPinkColor, fontSize: 10, fontWeight: FontWeight.w600),),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      const Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("08/23", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),),
-                                SizedBox(height: 4),
-                                Text("EXPIRY DATE", style: TextStyle(color: lightestPinkColor, fontSize: 10, fontWeight: FontWeight.w600),),
-                              ],
-                            ),
-                          ),
-
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("688", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),),
-                                SizedBox(height: 4),
-                                Text("CVV", style: TextStyle(color: lightestPinkColor, fontSize: 10, fontWeight: FontWeight.w600),),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      const Divider(color: lightestPinkColor, thickness: 0.5, height: 64,),
-
-                      const Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text.rich(
-                            TextSpan(
-                                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
-                                children: [
-                                  TextSpan(
-                                      text: "232.48"
-                                  ),
-                                  TextSpan(
-                                    text: " JOD",
-                                    style: TextStyle(color: gray300Color, fontSize: 10, fontWeight: FontWeight.w700),
-
-                                  ),
-                                ]
-                            ),
-                          ),
-                          SizedBox(height: 4),
-                          Text("TOTAL USED AMOUNT", style: TextStyle(color: lightestPinkColor, fontSize: 10, fontWeight: FontWeight.w600),),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      const Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text.rich(
-                            TextSpan(
-                                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
-                                children: [
-                                  TextSpan(
-                                      text: "1,000.00"
-                                  ),
-                                  TextSpan(
-                                    text: " JOD",
-                                    style: TextStyle(color: gray300Color, fontSize: 10, fontWeight: FontWeight.w700),
-
-                                  ),
-                                ]
-                            ),
-                          ),
-                          SizedBox(height: 4),
-                          Text("YOUR CARD LIMIT", style: TextStyle(color: lightestPinkColor, fontSize: 10, fontWeight: FontWeight.w600),),
-                        ],
-                      ),
-
-
-                    ],
-                  ),
-                ),
-              ),
             ),
           ),
           builder: (context, child) {
+            ///Rotation in y axis
             return Transform(
               transform: Matrix4.identity()
                 ..setEntry(3, 2, 0.001)
-                // ..rotateY(_animationController.value * -math.pi),
-                ..rotateY(_animation.value * -math.pi),
+                ..rotateY(_cardRotationAnimation.value * -math.pi),
               alignment: Alignment.center,
               child: child,
             );
           },
         ),
 
-        ///Button
+        ///Timeline Button
         Positioned(
-          top: 20,
+          top: 22,
           child: AnimatedOpacity(
-            duration: const Duration(milliseconds: 800),
+            duration: const Duration(milliseconds: 500),
             opacity: _showButtonsInCreditCard
                 ? 1
                 : 0,
@@ -415,23 +428,58 @@ class _CreditCardState extends State<CreditCard> with SingleTickerProviderStateM
         ),
 
         ///Transactions button
+        ///Dropdown button
         Positioned(
-          bottom: 20,
+          bottom: 22,
+          ///Toggle between Transaction and Down Arrow button
           child: AnimatedOpacity(
             duration: const Duration(milliseconds: 500),
             opacity: _showButtonsInCreditCard
                 ? 1
                 : 0,
-            child: ElevatedCustomButton(
+            child: InkWell(
               onTap: () {
+                if(context.read<DashboardViewModel>().settings) {
+                  context.read<DashboardViewModel>().showSettingPage(false);
+                  return;
+                }
+
                 if(_showButtonsInCreditCard) {
                   context.read<DashboardViewModel>().animateForward();
                   Navigator.of(context).push(slideBottomToTop(nextPage: const TransactionView()));
                 }
               },
-              label: "Transactions",
-              buttonColor: Colors.white,
-              foregroundColor: primaryButtonColor,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.easeInOut,
+                width: context.watch<DashboardViewModel>().settings
+                    ? 48
+                    : 150,
+                height: context.watch<DashboardViewModel>().settings
+                    ? 48
+                    : 44,
+                alignment: Alignment.center,
+
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: gray200Color, width: 1),
+                  borderRadius: BorderRadius.circular(100),
+                  boxShadow: const [
+                    BoxShadow(color: gray200Color, blurRadius: 5, spreadRadius: 0.1, offset: Offset(0,4))
+                  ],
+                ),
+                child: AnimatedCrossFade(
+                  duration: const Duration(milliseconds: 500),
+                  reverseDuration: const Duration(milliseconds: 500),
+                  firstCurve: Curves.easeIn,
+                  secondCurve: Curves.easeIn,
+                  alignment: Alignment.center,
+                  crossFadeState: context.watch<DashboardViewModel>().settings
+                      ? CrossFadeState.showFirst:CrossFadeState.showSecond,
+                  firstChild: const SVGImage(assetPath: "assets/icons/down.svg"),
+                  secondChild: const Text("Transactions", style: TextStyle(color: primaryButtonColor, fontSize: 12, fontWeight: FontWeight.w600),),
+                )
+              ),
             ),
           ),
         ),
@@ -440,15 +488,10 @@ class _CreditCardState extends State<CreditCard> with SingleTickerProviderStateM
   }
 
   _rotate() {
-    if(!_animationController.isAnimating) {
-      _animationController.isDismissed
-          ? _animationController.forward()
-          : _animationController.reverse();
-      // if(_animationController.isCompleted) {
-      //   // _animationController.stop();
-      //   _animationController.value = 0;
-      //   _animationController.forward();
-      // }
+    if(!_cardRotationController.isAnimating) {
+      _cardRotationController.isDismissed
+          ? _cardRotationController.forward()
+          : _cardRotationController.reverse();
 
 
       setState(() {

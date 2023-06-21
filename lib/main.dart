@@ -3,6 +3,7 @@ import 'package:blink/views/dashboard/dashboard_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+
 void main() {
   runApp(const MyApp());
 }
@@ -15,6 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        // ChangeNotifierProvider(create: (_) => LayoutViewModel()),
         ChangeNotifierProvider(create: (_) => DashboardViewModel()),
       ],
       child: GestureDetector(
