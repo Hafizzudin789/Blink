@@ -16,6 +16,8 @@ class DebitCard extends StatefulWidget {
 class _DebitCardState extends State<DebitCard> with SingleTickerProviderStateMixin{
 
   late AnimationController _animationController;
+  late Animation<double> _cardRotationAnimation;
+
   bool _showButtonsInDebitCard = true;
 
   @override
@@ -24,6 +26,13 @@ class _DebitCardState extends State<DebitCard> with SingleTickerProviderStateMix
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 800),
+    );
+
+    _cardRotationAnimation = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut, reverseCurve: Curves.easeInOut),
     );
   }
 
@@ -260,7 +269,7 @@ class _DebitCardState extends State<DebitCard> with SingleTickerProviderStateMix
             return Transform(
               transform: Matrix4.identity()
                 ..setEntry(3, 2, 0.001)
-                ..rotateY(_animationController.value * -math.pi),
+                ..rotateY(_cardRotationAnimation.value * -math.pi),
               alignment: Alignment.center,
               child: child,
             );
