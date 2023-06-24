@@ -2,49 +2,65 @@ import 'package:flutter/cupertino.dart';
 
 class DashboardViewModel extends ChangeNotifier {
 
-  late AnimationController translateAnimationController;
-  late AnimationController scaleAnimationController;
-
+  late AnimationController translateUpController;
   late Animation<double> animation;
 
+  late AnimationController translateSidewaysController;
 
-  animateForward() {
-    translateAnimationController.forward();
+  late AnimationController scaleAnimationController;
+
+
+
+  animateForwardTransactionPage() {
+    translateUpController.forward();
     scaleAnimationController.forward();
   }
 
-  animateReverse() {
-    translateAnimationController.reverse();
+  animateReverseTransactionPage() {
+    translateUpController.reverse();
     scaleAnimationController.reverse();
   }
 
-  disposeControllers() {
-    translateAnimationController.dispose();
-    scaleAnimationController.dispose();
-  }
+
 
 
 
 
   animateForwardSettingsPage() {
-    translateAnimationController.forward();
+    translateSidewaysController.forward();
+    translateUpController.forward();
   }
 
   animateReverseSettingsPage() {
-    translateAnimationController.reverse();
+    translateSidewaysController.reverse();
+    translateUpController.reverse();
   }
 
 
+
+  double bottomNavbarHeight = 135;
   bool settings = false;
   showSettingPage(bool value) {
     if(value) {
+      Future.delayed(const Duration(milliseconds: 300), () {
+        bottomNavbarHeight = 0;
+        notifyListeners();
+      },);
       animateForwardSettingsPage();
     } else {
+      bottomNavbarHeight = 135;
       animateReverseSettingsPage();
     }
 
     settings = value;
     notifyListeners();
+  }
+
+  disposeControllers() {
+    translateUpController.dispose();
+    scaleAnimationController.dispose();
+
+    translateSidewaysController.dispose();
   }
 
 }

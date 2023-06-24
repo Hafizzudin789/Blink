@@ -75,7 +75,7 @@ class _CreditCardState extends State<CreditCard> with SingleTickerProviderStateM
                     : CrossFadeState.showSecond,
                 alignment: Alignment.center,
                 duration: const Duration(milliseconds: 600),
-                reverseDuration: const Duration(milliseconds: 600),
+                reverseDuration: const Duration(milliseconds: 800),
                 firstCurve: Curves.easeInToLinear,
                 secondCurve: Curves.easeInToLinear,
                 sizeCurve: Curves.easeInToLinear,
@@ -445,7 +445,7 @@ class _CreditCardState extends State<CreditCard> with SingleTickerProviderStateM
                 }
 
                 if(_showButtonsInCreditCard) {
-                  context.read<DashboardViewModel>().animateForward();
+                  context.read<DashboardViewModel>().animateForwardTransactionPage();
                   Navigator.of(context).push(slideBottomToTop(nextPage: const TransactionView()));
                 }
               },
@@ -489,14 +489,21 @@ class _CreditCardState extends State<CreditCard> with SingleTickerProviderStateM
 
   _rotate() {
     if(!_cardRotationController.isAnimating) {
-      _cardRotationController.isDismissed
-          ? _cardRotationController.forward()
-          : _cardRotationController.reverse();
+      if(_cardRotationController.isDismissed) {
+        _cardRotationController.forward();
 
-
-      setState(() {
-        _showButtonsInCreditCard = !_showButtonsInCreditCard;
-      });
+        setState(() {
+          _showButtonsInCreditCard = !_showButtonsInCreditCard;
+        });
+      } else {
+        _cardRotationController.reverse();
+        Future.delayed(const Duration(milliseconds: 500),() {
+          setState(() {
+            _showButtonsInCreditCard = !_showButtonsInCreditCard;
+          });
+        },
+        );
+      }
     }
   }
 

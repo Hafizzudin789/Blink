@@ -16,7 +16,7 @@ class _TransactionViewState extends State<TransactionView> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        context.read<DashboardViewModel>().animateReverse();
+        context.read<DashboardViewModel>().animateReverseTransactionPage();
         return true;
       },
       child: Scaffold(
@@ -179,7 +179,7 @@ class _TransactionViewState extends State<TransactionView> {
                       top: 0,
                       child: InkWell(
                         onTap: () {
-                          context.read<DashboardViewModel>().animateReverse();
+                          context.read<DashboardViewModel>().animateReverseTransactionPage();
                           Navigator.pop(context);
                         },
                         child: Container(

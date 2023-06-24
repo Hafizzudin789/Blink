@@ -18,55 +18,54 @@ class _LayoutViewState extends State<LayoutView> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: const DashboardView(),
-      bottomNavigationBar: AnimatedCrossFade(
-        duration: const Duration(milliseconds: 500),
-        crossFadeState: context.watch<DashboardViewModel>().settings
-            ? CrossFadeState.showFirst
-            : CrossFadeState.showSecond,
-        // alignment: Alignment.center,
-        // excludeBottomFocus: true,
-        firstChild: const SizedBox(),
-        secondChild: AnimatedOpacity(
-          duration: const Duration(milliseconds: 500),
-          opacity: context.watch<DashboardViewModel>().settings
-              ? 0
-              : 1,
-          child: Theme(
-            data: ThemeData(
-              splashColor: Colors.transparent,
-            ),
-            child: BottomNavigationBar(
-              elevation: 0,
-              showSelectedLabels: false,
-              showUnselectedLabels: false,
-              enableFeedback: false,
-              backgroundColor: Colors.white,
-              onTap: (value) {},
-              type: BottomNavigationBarType.fixed,
-              items: const [
-                BottomNavigationBarItem(
-                  label: "Home",
-                  icon: Padding(
-                    padding: EdgeInsets.only(bottom: 12.0),
-                    child: SVGImage(assetPath: "assets/icons/home.svg"),
-                  ),
+      body: Stack(
+        alignment: Alignment.bottomCenter,
+        children: [
+          const DashboardView(),
+          AnimatedOpacity(
+            duration: const Duration(milliseconds: 300),
+            opacity: context.watch<DashboardViewModel>().settings
+                ? 0
+                : 1,
+            child: Theme(
+              data: ThemeData(
+                splashColor: Colors.transparent,
+              ),
+              child: SizedBox(
+                height: context.watch<DashboardViewModel>().bottomNavbarHeight,
+                child: BottomNavigationBar(
+                  elevation: 0,
+                  showSelectedLabels: false,
+                  showUnselectedLabels: false,
+                  enableFeedback: false,
+                  backgroundColor: Colors.white,
+                  onTap: (value) {},
+                  type: BottomNavigationBarType.fixed,
+                  items: const [
+                    BottomNavigationBarItem(
+                      label: "Home",
+                      icon: Padding(
+                        padding: EdgeInsets.only(bottom: 12.0),
+                        child: SVGImage(assetPath: "assets/icons/home.svg"),
+                      ),
+                    ),
+                    BottomNavigationBarItem(
+                      label: "Main",
+                      icon: SVGImage(assetPath: "assets/icons/mainButton.svg"),
+                    ),
+                    BottomNavigationBarItem(
+                      label: "Support",
+                      icon: Padding(
+                        padding: EdgeInsets.only(bottom: 12.0),
+                        child: SVGImage(assetPath: "assets/icons/headPhone.svg"),
+                      ),
+                    )
+                  ],
                 ),
-                BottomNavigationBarItem(
-                  label: "Main",
-                  icon: SVGImage(assetPath: "assets/icons/mainButton.svg"),
-                ),
-                BottomNavigationBarItem(
-                  label: "Support",
-                  icon: Padding(
-                    padding: EdgeInsets.only(bottom: 12.0),
-                    child: SVGImage(assetPath: "assets/icons/headPhone.svg"),
-                  ),
-                )
-              ],
+              ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }

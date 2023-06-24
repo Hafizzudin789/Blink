@@ -32,7 +32,8 @@ class MyApp extends StatelessWidget {
               bodyMedium: TextStyle(
                 color: Colors.white,
               )
-            )
+            ),
+            scaffoldBackgroundColor: Colors.white
           ),
           home: const LayoutView(),
         ),
