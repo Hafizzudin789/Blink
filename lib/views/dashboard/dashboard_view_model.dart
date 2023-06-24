@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
 
+import '../navigation_transitions.dart';
+import '../transaction_view.dart';
+
 class DashboardViewModel extends ChangeNotifier {
 
   late AnimationController translateUpController;
@@ -12,13 +15,23 @@ class DashboardViewModel extends ChangeNotifier {
 
 
   animateForwardTransactionPage() {
+    transactionPage = true;
+    notifyListeners();
     translateUpController.forward();
     scaleAnimationController.forward();
   }
 
   animateReverseTransactionPage() {
+    transactionPage = false;
+    notifyListeners();
     translateUpController.reverse();
     scaleAnimationController.reverse();
+  }
+
+  bool transactionPage = false;
+  goToTransactionPage(BuildContext context) {
+    animateForwardTransactionPage();
+    Navigator.of(context).push(slideBottomToTop(nextPage: const TransactionView()));
   }
 
 

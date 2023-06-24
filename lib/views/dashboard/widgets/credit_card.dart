@@ -65,7 +65,7 @@ class _CreditCardState extends State<CreditCard> with SingleTickerProviderStateM
             ///Hide the card content when settings page is active
             child: AnimatedOpacity(
               duration: const Duration(milliseconds: 500),
-              opacity: context.watch<DashboardViewModel>().settings
+              opacity: context.watch<DashboardViewModel>().settings || context.watch<DashboardViewModel>().transactionPage
                   ? 0:1,
               ///While rotating the card
               ///Change the content of the card
@@ -445,8 +445,7 @@ class _CreditCardState extends State<CreditCard> with SingleTickerProviderStateM
                 }
 
                 if(_showButtonsInCreditCard) {
-                  context.read<DashboardViewModel>().animateForwardTransactionPage();
-                  Navigator.of(context).push(slideBottomToTop(nextPage: const TransactionView()));
+                  context.read<DashboardViewModel>().goToTransactionPage(context);
                 }
               },
               child: AnimatedContainer(
