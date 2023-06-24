@@ -12,6 +12,8 @@ class DashboardViewModel extends ChangeNotifier {
 
   late AnimationController scaleAnimationController;
 
+  late AnimationController translateTimelineController;
+
 
 
   animateForwardTransactionPage() {
@@ -69,11 +71,30 @@ class DashboardViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+
+
+  bool timelinePage = false;
+  showTimeline(bool value) {
+    if(value) {
+      Future.delayed(const Duration(milliseconds: 300), () {
+        bottomNavbarHeight = 0;
+        notifyListeners();
+      },);
+      translateTimelineController.forward();
+    } else {
+      bottomNavbarHeight = 135;
+      translateTimelineController.reverse();
+    }
+    timelinePage = value;
+    notifyListeners();
+  }
+
   disposeControllers() {
     translateUpController.dispose();
     scaleAnimationController.dispose();
 
     translateSidewaysController.dispose();
+    translateTimelineController.dispose();
   }
 
 }

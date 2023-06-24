@@ -24,7 +24,7 @@ class _LayoutViewState extends State<LayoutView> with SingleTickerProviderStateM
           const DashboardView(),
           AnimatedOpacity(
             duration: const Duration(milliseconds: 300),
-            opacity: context.watch<DashboardViewModel>().settings
+            opacity: context.watch<DashboardViewModel>().settings || context.watch<DashboardViewModel>().timelinePage
                 ? 0
                 : 1,
             child: Theme(

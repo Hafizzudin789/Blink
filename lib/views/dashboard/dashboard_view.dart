@@ -1,5 +1,6 @@
 import 'package:blink/views/dashboard/dashboard_view_model.dart';
 import 'package:blink/views/dashboard/widgets/credit_card.dart';
+import 'package:blink/views/time_line_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../constant/app_color.dart';
@@ -59,6 +60,11 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
       duration: const Duration(milliseconds: 500),
     );
 
+    context.read<DashboardViewModel>().translateTimelineController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+
   }
 
   @override
@@ -78,20 +84,17 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
           const SettingsView(),
           AnimatedBuilder(
             animation: context.read<DashboardViewModel>().translateUpController,
-            child: Padding(
-              ///135 is the height of bottom nav bar height
-              padding: const EdgeInsets.only(bottom: 135.0),
-              child: SafeArea(
-                child: Container(
-                  color: Colors.white,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      _totalBalance(),
-                      _pageViewWidget(),
-                      _pageViewIndicator(),
-                    ],
-                  ),
+            child: SafeArea(
+              child: Container(
+                margin: EdgeInsets.only(bottom: context.read<DashboardViewModel>().timelinePage?0:135),
+                color: Colors.white,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _totalBalance(),
+                    _pageViewWidget(),
+                    _pageViewIndicator(),
+                  ],
                 ),
               ),
             ),
@@ -139,8 +142,8 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
       child: PageView.builder(
         itemCount: 3,
         controller: pageController,
-        ///If settings page is active do not scroll horizontal (swipe)
-        physics: context.watch<DashboardViewModel>().settings
+        ///If settings page or timeline page is active do not scroll horizontal (swipe)
+        physics: context.watch<DashboardViewModel>().settings || context.watch<DashboardViewModel>().timelinePage
             ? const NeverScrollableScrollPhysics()
             : const ClampingScrollPhysics(),
         onPageChanged: (int value) {
@@ -149,47 +152,73 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
           });
         },
         itemBuilder: (context, index) {
-          ///Side ways translation animation
-          return AnimatedBuilder(
-            animation: context.read<DashboardViewModel>().translateSidewaysController,
-            ///Tilted semicircle
-            child: AnimatedBuilder(
-              animation: pageController,
-              builder: (context, child) {
-                double value = 0;
-                ///Checking if pageController is ready to use
-                if(pageController.position.hasContentDimensions) {
-                  ///For current page value = 0, so rotation and translation value is zero
-                  value = index.toDouble() - (pageController.page??0);
-                  value = (value * 0.012);
-                }
-                ///Tilted semicircle
-                return Transform.rotate(
-                  angle: (math.pi * value),
-                  child: Transform.translate(
-                    offset: Offset(0, value.abs() * 500),
-                    child: AnimatedOpacity(
-                      opacity: index == pageViewIndex
-                          ? 1
-                          : 0.5,
-                      duration: const Duration(milliseconds: 400),
-                      child: _cards(index),
-                    ),
+          return Stack(
+            children: [
+              AnimatedOpacity(
+                duration: const Duration(milliseconds: 500),
+                opacity: context.read<DashboardViewModel>().timelinePage && pageViewIndex == index
+                    ? 1
+                    : 0,
+                child: const TimelineView(),
+              ),
+
+              ///Side ways translation animation timeline
+              AnimatedBuilder(
+                animation: context.read<DashboardViewModel>().translateTimelineController,
+                ///Side ways translation animation settings
+                child: AnimatedBuilder(
+                  animation: context.read<DashboardViewModel>().translateSidewaysController,
+                  ///Tilted semicircle
+                  child: AnimatedBuilder(
+                    animation: pageController,
+                    builder: (context, child) {
+                      double value = 0;
+                      ///Checking if pageController is ready to use
+                      if(pageController.position.hasContentDimensions) {
+                        ///For current page value = 0, so rotation and translation value is zero
+                        value = index.toDouble() - (pageController.page??0);
+                        value = (value * 0.012);
+                      }
+                      ///Tilted semicircle
+                      return Transform.rotate(
+                        angle: (math.pi * value),
+                        child: Transform.translate(
+                          offset: Offset(0, value.abs() * 500),
+                          child: AnimatedOpacity(
+                            opacity: index == pageViewIndex
+                                ? 1
+                                : 0.5,
+                            duration: const Duration(milliseconds: 400),
+                            child: _cards(index),
+                          ),
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
-            builder: (context, child) {
-            ///Side ways translation animation
-              return Transform.translate(
-                offset: pageViewIndex == index
-                    ? const Offset(0, 0)
-                    : pageViewIndex < index
-                        ? Offset(context.read<DashboardViewModel>().translateSidewaysController.value*100, 0)
-                        : Offset(-context.read<DashboardViewModel>().translateSidewaysController.value*100, 0) ,
-                child: child,
-              );
-            }
+                  builder: (context, child) {
+                  ///Side ways translation timeline animation
+                    return Transform.translate(
+                      offset: pageViewIndex == index
+                          ? const Offset(0, 0)
+                          : pageViewIndex < index
+                              ? Offset(context.read<DashboardViewModel>().translateSidewaysController.value*100, 0)
+                              : Offset(-context.read<DashboardViewModel>().translateSidewaysController.value*100, 0) ,
+                      child: child,
+                    );
+                  }
+                ),
+                builder: (context, child) {
+                  return Transform.translate(
+                    offset: pageViewIndex == index
+                        ? Offset(0, context.read<DashboardViewModel>().translateTimelineController.value* (MediaQuery.of(context).size.height*0.65))
+                        : pageViewIndex < index
+                        ? Offset(context.read<DashboardViewModel>().translateTimelineController.value*100, 0)
+                        : Offset(-context.read<DashboardViewModel>().translateTimelineController.value*100, 0),
+                    child: child,
+                  );
+                },
+              ),
+            ],
           );
         },
       ),

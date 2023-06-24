@@ -5,8 +5,6 @@ import '../../../widgets/customPattern.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/custom_svg_image.dart';
 import 'dart:math' as math;
-import '../../navigation_transitions.dart';
-import '../../transaction_view.dart';
 import '../dashboard_view_model.dart';
 
 
@@ -408,21 +406,26 @@ class _CreditCardState extends State<CreditCard> with SingleTickerProviderStateM
         ///Timeline Button
         Positioned(
           top: 22,
-          child: AnimatedOpacity(
-            duration: const Duration(milliseconds: 500),
-            opacity: _showButtonsInCreditCard
-                ? 1
-                : 0,
-            child: Container(
-              height: 48,
-              width: 48,
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white,
-                  border: Border.all(color: gray200Color, width: 1)
+          child: InkWell(
+            onTap: () {
+              context.read<DashboardViewModel>().showTimeline(!context.read<DashboardViewModel>().timelinePage);
+            },
+            child: AnimatedOpacity(
+              duration: const Duration(milliseconds: 500),
+              opacity: _showButtonsInCreditCard
+                  ? 1
+                  : 0,
+              child: Container(
+                height: 48,
+                width: 48,
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white,
+                    border: Border.all(color: gray200Color, width: 1)
+                ),
+                child: const SVGImage(assetPath: "assets/icons/audioWave.svg"),
               ),
-              child: const SVGImage(assetPath: "assets/icons/audioWave.svg"),
             ),
           ),
         ),
