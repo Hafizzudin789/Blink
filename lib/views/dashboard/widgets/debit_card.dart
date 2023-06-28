@@ -61,10 +61,11 @@ class _DebitCardState extends State<DebitCard> with SingleTickerProviderStateMix
                   ? CrossFadeState.showFirst
                   : CrossFadeState.showSecond,
               alignment: Alignment.center,
-              duration: const Duration(seconds: 1),
-              reverseDuration: const Duration(seconds: 1),
-              firstCurve: Curves.linearToEaseOut,
-              secondCurve: Curves.linearToEaseOut,
+              duration: const Duration(milliseconds: 600),
+              reverseDuration: const Duration(milliseconds: 800),
+              firstCurve: Curves.easeInToLinear,
+              secondCurve: Curves.easeInToLinear,
+              sizeCurve: Curves.easeInToLinear,
               layoutBuilder: (Widget topChild, Key topChildKey, Widget bottomChild, Key bottomChildKey) {
                 return Stack(
                   clipBehavior: Clip.none,
@@ -88,83 +89,161 @@ class _DebitCardState extends State<DebitCard> with SingleTickerProviderStateMix
                   ],
                 );
               },
-              firstChild: ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: CustomPaint(
-                  painter: const CustomPatternCircleDebitCard(),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
+              firstChild: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  image: const DecorationImage(
+                    image: AssetImage("assets/image/cardDebit.png"),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Row(
                       children: [
-                        Row(
-                          children: [
-                            const Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("My Debit Card", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.black),),
-                                  SizedBox(height: 10),
-                                  Align(alignment: Alignment.centerLeft, child: SVGImage(assetPath: "assets/appName.svg", color: Colors.black)),
-                                ],
-                              ),
-                            ),
-                            InkWell(
-                              onTap: () {
-                                _rotate();
-                              },
-                              child: Container(
-                                height: 50,
-                                width: 50,
-                                padding: const EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: yellowColor,
-                                  border: Border.all(color: lightYellowColor),
-                                  boxShadow: const [
-                                    BoxShadow(color: Colors.black26, blurRadius: 10, spreadRadius: 0.1),
-                                  ],
-                                ),
-                                child: const SVGImage(assetPath: "assets/icons/spin.svg",),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-                        const Text("Zein Malhas", style: TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.w600),),
-
                         const Expanded(
-                          child: SizedBox(),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("My Debit Card", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.black),),
+                              SizedBox(height: 10),
+                              Align(alignment: Alignment.centerLeft, child: SVGImage(assetPath: "assets/appName.svg", color: Colors.black)),
+                            ],
+                          ),
                         ),
-
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const CustomButton(
-                              label: "Add money",
-                              buttonColor: primaryButtonColor,
+                        InkWell(
+                          onTap: () {
+                            _rotate();
+                          },
+                          child: Container(
+                            height: 50,
+                            width: 50,
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: yellowColor,
+                              border: Border.all(color: lightYellowColor),
+                              boxShadow: const [
+                                BoxShadow(color: Colors.black26, blurRadius: 10, spreadRadius: 0.1),
+                              ],
                             ),
-                            Container(
-                              height: 50,
-                              width: 50,
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: yellowColor,
-                                border: Border.all(color: lightYellowColor),
-                                boxShadow: const [
-                                  BoxShadow(color: Colors.black26, blurRadius: 10, spreadRadius: 0.1),
-                                ],
-                              ),
-                              child: const SVGImage(assetPath: "assets/icons/settings.svg",),
-                            ),
-                          ],
+                            child: const SVGImage(assetPath: "assets/icons/spin.svg",),
+                          ),
                         ),
                       ],
                     ),
-                  ),
+                    const SizedBox(height: 20),
+                    const Text("Zein Malhas", style: TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.w600),),
+
+                    const Expanded(
+                      child: SizedBox(),
+                    ),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const CustomButton(
+                          label: "Add money",
+                          buttonColor: primaryButtonColor,
+                        ),
+                        Container(
+                          height: 50,
+                          width: 50,
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: yellowColor,
+                            border: Border.all(color: lightYellowColor),
+                            boxShadow: const [
+                              BoxShadow(color: Colors.black26, blurRadius: 10, spreadRadius: 0.1),
+                            ],
+                          ),
+                          child: const SVGImage(assetPath: "assets/icons/settings.svg",),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
+              // firstChild: ClipRRect(
+              //   borderRadius: BorderRadius.circular(16),
+              //   child: CustomPaint(
+              //     painter: const CustomPatternCircleDebitCard(),
+              //     child: Padding(
+              //       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+              //       child: Column(
+              //         crossAxisAlignment: CrossAxisAlignment.stretch,
+              //         children: [
+              //           Row(
+              //             children: [
+              //               const Expanded(
+              //                 child: Column(
+              //                   crossAxisAlignment: CrossAxisAlignment.start,
+              //                   children: [
+              //                     Text("My Debit Card", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.black),),
+              //                     SizedBox(height: 10),
+              //                     Align(alignment: Alignment.centerLeft, child: SVGImage(assetPath: "assets/appName.svg", color: Colors.black)),
+              //                   ],
+              //                 ),
+              //               ),
+              //               InkWell(
+              //                 onTap: () {
+              //                   _rotate();
+              //                 },
+              //                 child: Container(
+              //                   height: 50,
+              //                   width: 50,
+              //                   padding: const EdgeInsets.all(12),
+              //                   decoration: BoxDecoration(
+              //                     shape: BoxShape.circle,
+              //                     color: yellowColor,
+              //                     border: Border.all(color: lightYellowColor),
+              //                     boxShadow: const [
+              //                       BoxShadow(color: Colors.black26, blurRadius: 10, spreadRadius: 0.1),
+              //                     ],
+              //                   ),
+              //                   child: const SVGImage(assetPath: "assets/icons/spin.svg",),
+              //                 ),
+              //               ),
+              //             ],
+              //           ),
+              //           const SizedBox(height: 20),
+              //           const Text("Zein Malhas", style: TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.w600),),
+              //
+              //           const Expanded(
+              //             child: SizedBox(),
+              //           ),
+              //
+              //           Row(
+              //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //             children: [
+              //               const CustomButton(
+              //                 label: "Add money",
+              //                 buttonColor: primaryButtonColor,
+              //               ),
+              //               Container(
+              //                 height: 50,
+              //                 width: 50,
+              //                 padding: const EdgeInsets.all(12),
+              //                 decoration: BoxDecoration(
+              //                   shape: BoxShape.circle,
+              //                   color: yellowColor,
+              //                   border: Border.all(color: lightYellowColor),
+              //                   boxShadow: const [
+              //                     BoxShadow(color: Colors.black26, blurRadius: 10, spreadRadius: 0.1),
+              //                   ],
+              //                 ),
+              //                 child: const SVGImage(assetPath: "assets/icons/settings.svg",),
+              //               ),
+              //             ],
+              //           ),
+              //         ],
+              //       ),
+              //     ),
+              //   ),
+              // ),
               secondChild: Transform.flip(
                 flipX: true,
                 child: Padding(
@@ -318,14 +397,32 @@ class _DebitCardState extends State<DebitCard> with SingleTickerProviderStateMix
   }
 
   _rotate() {
-    if(!_animationController.isAnimating) {
-      _animationController.isDismissed
-          ? _animationController.forward()
-          : _animationController.reverse();
+    // if(!_animationController.isAnimating) {
+    //   _animationController.isDismissed
+    //       ? _animationController.forward()
+    //       : _animationController.reverse();
+    //
+    //   setState(() {
+    //     _showButtonsInDebitCard = !_showButtonsInDebitCard;
+    //   });
+    // }
 
-      setState(() {
-        _showButtonsInDebitCard = !_showButtonsInDebitCard;
-      });
+    if(!_animationController.isAnimating) {
+      if(_animationController.isDismissed) {
+        _animationController.forward();
+
+        setState(() {
+          _showButtonsInDebitCard = !_showButtonsInDebitCard;
+        });
+      } else {
+        _animationController.reverse();
+        Future.delayed(const Duration(milliseconds: 500),() {
+          setState(() {
+            _showButtonsInDebitCard = !_showButtonsInDebitCard;
+          });
+        },
+        );
+      }
     }
   }
 }

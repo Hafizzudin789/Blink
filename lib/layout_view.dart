@@ -14,7 +14,6 @@ class LayoutView extends StatefulWidget {
 
 class _LayoutViewState extends State<LayoutView> with SingleTickerProviderStateMixin{
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

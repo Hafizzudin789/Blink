@@ -76,13 +76,17 @@ class DashboardViewModel extends ChangeNotifier {
   bool timelinePage = false;
   showTimeline(bool value) {
     if(value) {
-      Future.delayed(const Duration(milliseconds: 300), () {
+      Future.delayed(const Duration(milliseconds: 500), () {
         bottomNavbarHeight = 0;
         notifyListeners();
       },);
       translateTimelineController.forward();
     } else {
-      bottomNavbarHeight = 135;
+      Future.delayed(const Duration(milliseconds: 500), () {
+        bottomNavbarHeight = 135;
+        notifyListeners();
+      },);
+
       translateTimelineController.reverse();
     }
     timelinePage = value;

@@ -1,5 +1,6 @@
 import 'package:blink/widgets/custom_svg_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import '../constant/app_color.dart';
 import 'dashboard/dashboard_view_model.dart';
