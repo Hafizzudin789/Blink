@@ -408,6 +408,7 @@ class _CreditCardState extends State<CreditCard> with SingleTickerProviderStateM
           top: 22,
           child: InkWell(
             onTap: () {
+              if(!_showButtonsInCreditCard) return;
               context.read<DashboardViewModel>().showTimeline(!context.read<DashboardViewModel>().timelinePage);
             },
             child: AnimatedOpacity(
@@ -422,9 +423,13 @@ class _CreditCardState extends State<CreditCard> with SingleTickerProviderStateM
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: Colors.white,
-                    border: Border.all(color: gray200Color, width: 1)
+                    border: Border.all(color: gray200Color, width: 1)),
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 500),
+                  child: !context.read<DashboardViewModel>().timelinePage
+                      ? const SVGImage(assetPath: "assets/icons/audioWave.svg")
+                      : const SVGImage(assetPath: "assets/icons/up.svg"),
                 ),
-                child: const SVGImage(assetPath: "assets/icons/audioWave.svg"),
               ),
             ),
           ),
@@ -490,6 +495,7 @@ class _CreditCardState extends State<CreditCard> with SingleTickerProviderStateM
   }
 
   _rotate() {
+    if(context.read<DashboardViewModel>().timelinePage) return;
     if(!_cardRotationController.isAnimating) {
       if(_cardRotationController.isDismissed) {
         _cardRotationController.forward();

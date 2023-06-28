@@ -50,7 +50,8 @@ class _SettingsViewState extends State<SettingsView> {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 42, vertical: 8),
       leading: SVGImage(assetPath: iconPath),
-      onTap: () {},
+      onTap: () {
+      },
       title: Text(label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400),),
     );
   }

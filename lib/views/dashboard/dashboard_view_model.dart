@@ -5,28 +5,28 @@ import '../transaction_view.dart';
 
 class DashboardViewModel extends ChangeNotifier {
 
-  late AnimationController translateUpController;
+  late AnimationController translateSettingsUpController;
   late Animation<double> animation;
 
   late AnimationController translateSidewaysController;
 
   late AnimationController scaleAnimationController;
 
-  late AnimationController translateTimelineController;
+  late AnimationController translateTimelineDownController;
 
 
 
   animateForwardTransactionPage() {
     transactionPage = true;
     notifyListeners();
-    translateUpController.forward();
+    translateSettingsUpController.forward();
     scaleAnimationController.forward();
   }
 
   animateReverseTransactionPage() {
     transactionPage = false;
     notifyListeners();
-    translateUpController.reverse();
+    translateSettingsUpController.reverse();
     scaleAnimationController.reverse();
   }
 
@@ -43,12 +43,12 @@ class DashboardViewModel extends ChangeNotifier {
 
   animateForwardSettingsPage() {
     translateSidewaysController.forward();
-    translateUpController.forward();
+    translateSettingsUpController.forward();
   }
 
   animateReverseSettingsPage() {
     translateSidewaysController.reverse();
-    translateUpController.reverse();
+    translateSettingsUpController.reverse();
   }
 
 
@@ -73,6 +73,17 @@ class DashboardViewModel extends ChangeNotifier {
 
 
 
+
+  animateForwardTimelinePage() {
+    translateTimelineDownController.forward();
+    translateSidewaysController.forward();
+  }
+
+  animateReverseTimelinePage() {
+    translateTimelineDownController.reverse();
+    translateSidewaysController.reverse();
+  }
+
   bool timelinePage = false;
   showTimeline(bool value) {
     if(value) {
@@ -80,25 +91,25 @@ class DashboardViewModel extends ChangeNotifier {
         bottomNavbarHeight = 0;
         notifyListeners();
       },);
-      translateTimelineController.forward();
+      animateForwardTimelinePage();
     } else {
       Future.delayed(const Duration(milliseconds: 500), () {
         bottomNavbarHeight = 135;
         notifyListeners();
       },);
 
-      translateTimelineController.reverse();
+      animateReverseTimelinePage();
     }
     timelinePage = value;
     notifyListeners();
   }
 
   disposeControllers() {
-    translateUpController.dispose();
+    translateSettingsUpController.dispose();
     scaleAnimationController.dispose();
 
     translateSidewaysController.dispose();
-    translateTimelineController.dispose();
+    translateTimelineDownController.dispose();
   }
 
 }

@@ -2,7 +2,6 @@ import 'package:blink/views/dashboard/dashboard_view_model.dart';
 import 'package:blink/views/dashboard/widgets/credit_card.dart';
 import 'package:blink/views/time_line_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import '../../constant/app_color.dart';
 import 'dart:math' as math;
@@ -32,7 +31,7 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
     super.initState();
     pageController = PageController(initialPage: pageViewIndex, viewportFraction: 0.8);
 
-    context.read<DashboardViewModel>().translateUpController = AnimationController(
+    context.read<DashboardViewModel>().translateSettingsUpController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
@@ -40,7 +39,7 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
       begin: 0,
       end: 1,
     ).animate(
-      CurvedAnimation(parent: context.read<DashboardViewModel>().translateUpController,
+      CurvedAnimation(parent: context.read<DashboardViewModel>().translateSettingsUpController,
           curve: Curves.easeInOut,
           reverseCurve: Curves.easeInOut,
       ),
@@ -61,7 +60,7 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
       duration: const Duration(milliseconds: 500),
     );
 
-    context.read<DashboardViewModel>().translateTimelineController = AnimationController(
+    context.read<DashboardViewModel>().translateTimelineDownController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
@@ -82,70 +81,60 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
     return Scaffold(
       body: Stack(
         children: [
-          AnimatedOpacity(
+          ///Settings page
+          ///Timeline page
+          AnimatedSwitcher(
             duration: const Duration(milliseconds: 500),
-            opacity: context.read<DashboardViewModel>().settings
-                ? 1
-                : 0,
-            child: const SettingsView(),
+            reverseDuration: const Duration(milliseconds: 400),
+            switchInCurve: Curves.easeInOut,
+            switchOutCurve: Curves.linearToEaseOut,
+            child: context.read<DashboardViewModel>().settings
+                ? const SettingsView(key: Key("Setting"),)
+                : context.read<DashboardViewModel>().timelinePage
+                  ? const TimelineView(key: Key("Timeline"),)
+                  : const SizedBox(),
           ),
           AnimatedBuilder(
-            animation: context.read<DashboardViewModel>().translateUpController,
-            child: SafeArea(
-              child: Container(
-                margin: EdgeInsets.only(bottom: context.read<DashboardViewModel>().timelinePage?0:135),
-                // margin: EdgeInsets.only(bottom: context.read<DashboardViewModel>().timelinePage?0:0),
-                color: Colors.white,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _totalBalance(),
-                    _pageViewWidget(),
-                    // Padding(
-                    //   padding: EdgeInsets.only(bottom: context.read<DashboardViewModel>().timelinePage?120:120),
-                    //   child: _pageViewIndicator(),
-                    // )
-                    _pageViewIndicator(),
-                  ],
+            animation: context.read<DashboardViewModel>().translateTimelineDownController,
+            child: AnimatedBuilder(
+              animation: context.read<DashboardViewModel>().translateSettingsUpController,
+              child: SafeArea(
+                child: Container(
+                  margin: EdgeInsets.only(bottom: context.read<DashboardViewModel>().timelinePage?0:135),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                        AnimatedOpacity(
+                          duration: const Duration(milliseconds: 500),
+                          opacity: context.read<DashboardViewModel>().timelinePage ? 0: 1,
+                          child: totalBalance(),
+                        ),
+                        _pageViewWidget(),
+                      _pageViewIndicator(),
+                    ],
+                  ),
                 ),
               ),
+              builder: (context, child) {
+                return Transform.translate(
+                  offset: Offset(0, context.read<DashboardViewModel>().animation.value* (-MediaQuery.of(context).size.height*0.65)),
+                  child: Transform.scale(
+                    scale: context.read<DashboardViewModel>().scaleAnimationController.value,
+                    child: child,
+                  ),
+                );
+              }
             ),
             builder: (context, child) {
+              ///Timeline animation
               return Transform.translate(
-                offset: Offset(0, context.read<DashboardViewModel>().animation.value* (-MediaQuery.of(context).size.height*0.65)),
-                child: Transform.scale(
-                  scale: context.read<DashboardViewModel>().scaleAnimationController.value,
-                  child: child,
-                ),
+                offset: Offset(0, context.read<DashboardViewModel>().translateTimelineDownController.value* (MediaQuery.of(context).size.height*0.65)),
+                child: child,
               );
-            }
+            },
           ),
         ],
       ),
-    );
-  }
-
-  Widget _totalBalance() {
-    return Column(
-      children: [
-        SizedBox(height: MediaQuery.of(context).size.height * 0.06),
-        const Text("Total Balance", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: blackColor),),
-        const SizedBox(height: 4),
-        const Text.rich(
-          TextSpan(
-            style: TextStyle(color: blackColor, fontSize: 24, fontWeight: FontWeight.w700),
-            children: [
-              TextSpan(
-                text: "7,896.00"
-              ),
-              TextSpan(
-                text: " JOD",
-                style: TextStyle(color: gray300Color, fontSize: 12, fontWeight: FontWeight.w700),
-              ),
-            ],
-          ),
-        ),
-      ],
     );
   }
 
@@ -164,77 +153,49 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
           });
         },
         itemBuilder: (context, index) {
-          return Stack(
-            children: [
-              AnimatedOpacity(
-                duration: const Duration(milliseconds: 500),
-                opacity: context.read<DashboardViewModel>().timelinePage && pageViewIndex == index
-                    ? 1
-                    : 0,
-                child: const TimelineView(),
-              ),
-
-              ///Side ways translation animation timeline
-              Padding(
-                padding: EdgeInsets.only(bottom: context.read<DashboardViewModel>().timelinePage?135:0),
-                // padding: EdgeInsets.only(bottom: context.read<DashboardViewModel>().timelinePage?0:0),
-                child: AnimatedBuilder(
-                  animation: context.read<DashboardViewModel>().translateTimelineController,
-                  ///Side ways translation animation settings
-                  child: AnimatedBuilder(
-                    animation: context.read<DashboardViewModel>().translateSidewaysController,
-                    ///Tilted semicircle
-                    child: AnimatedBuilder(
-                      animation: pageController,
-                      builder: (context, child) {
-                        double value = 0;
-                        ///Checking if pageController is ready to use
-                        if(pageController.position.hasContentDimensions) {
-                          ///For current page value = 0, so rotation and translation value is zero
-                          value = index.toDouble() - (pageController.page??0);
-                          value = (value * 0.012);
-                        }
-                        ///Tilted semicircle
-                        return Transform.rotate(
-                          angle: (math.pi * value),
-                          child: Transform.translate(
-                            offset: Offset(0, value.abs() * 500),
-                            child: AnimatedOpacity(
-                              opacity: index == pageViewIndex
-                                  ? 1
-                                  : 0.5,
-                              duration: const Duration(milliseconds: 400),
-                              child: _cards(index),
-                            ),
-                          ),
-                        );
-                      },
+          return Padding(
+            padding: EdgeInsets.only(bottom: context.read<DashboardViewModel>().timelinePage?135:0),
+            child: AnimatedBuilder(
+              animation: context.read<DashboardViewModel>().translateSidewaysController,
+              ///Tilted semicircle
+              child: AnimatedBuilder(
+                animation: pageController,
+                builder: (context, child) {
+                  double value = 0;
+                  ///Checking if pageController is ready to use
+                  if(pageController.position.hasContentDimensions) {
+                    ///For current page value = 0, so rotation and translation value is zero
+                    value = index.toDouble() - (pageController.page??0);
+                    value = (value * 0.012);
+                  }
+                  ///Tilted semicircle
+                  return Transform.rotate(
+                    angle: (math.pi * value),
+                    child: Transform.translate(
+                      offset: Offset(0, value.abs() * 500),
+                      child: AnimatedOpacity(
+                        opacity: index == pageViewIndex
+                            ? 1
+                            : 0.5,
+                        duration: const Duration(milliseconds: 400),
+                        child: _cards(index),
+                      ),
                     ),
-                    builder: (context, child) {
-                    ///Side ways translation timeline animation
-                      return Transform.translate(
-                        offset: pageViewIndex == index
-                            ? const Offset(0, 0)
-                            : pageViewIndex < index
-                                ? Offset(context.read<DashboardViewModel>().translateSidewaysController.value*100, 0)
-                                : Offset(-context.read<DashboardViewModel>().translateSidewaysController.value*100, 0) ,
-                        child: child,
-                      );
-                    }
-                  ),
-                  builder: (context, child) {
-                    return Transform.translate(
-                      offset: pageViewIndex == index
-                          ? Offset(0, context.read<DashboardViewModel>().translateTimelineController.value* (MediaQuery.of(context).size.height*0.65))
-                          : pageViewIndex < index
-                            ? Offset(context.read<DashboardViewModel>().translateTimelineController.value*100, 0)
-                            : Offset(-context.read<DashboardViewModel>().translateTimelineController.value*100, 0),
-                      child: child,
-                    );
-                  },
-                ),
+                  );
+                },
               ),
-            ],
+              builder: (context, child) {
+              ///Side ways translation timeline animation
+                return Transform.translate(
+                  offset: pageViewIndex == index
+                      ? const Offset(0, 0)
+                      : pageViewIndex < index
+                          ? Offset(context.read<DashboardViewModel>().translateSidewaysController.value*100, 0)
+                          : Offset(-context.read<DashboardViewModel>().translateSidewaysController.value*100, 0) ,
+                  child: child,
+                );
+              }
+            ),
           );
         },
       ),
@@ -284,5 +245,32 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
       duration: const Duration(milliseconds: 500),
     );
   }
+}
 
+Widget totalBalance() {
+  return Builder(
+    builder: (context) {
+      return Column(
+        children: [
+          SizedBox(height: MediaQuery.of(context).size.height * 0.06),
+          const Text("Total Balance", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: blackColor),),
+          const SizedBox(height: 4),
+          const Text.rich(
+            TextSpan(
+              style: TextStyle(color: blackColor, fontSize: 24, fontWeight: FontWeight.w700),
+              children: [
+                TextSpan(
+                    text: "7,896.00"
+                ),
+                TextSpan(
+                  text: " JOD",
+                  style: TextStyle(color: gray300Color, fontSize: 12, fontWeight: FontWeight.w700),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    }
+  );
 }
