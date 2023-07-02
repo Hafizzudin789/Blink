@@ -33,9 +33,11 @@ class _TimelineViewState extends State<TimelineView> {
                 scrollDirection: Axis.horizontal,
                 padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: 50),
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 28.0),
-                    child: Image.asset("assets/image/elementSwirl.png", height: 200, scale: 2,),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Image.asset("assets/image/elementSwirl.png", height: 150, scale: 2,),
+                    ],
                   ),
                 ],
               ),

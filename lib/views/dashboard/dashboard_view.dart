@@ -100,6 +100,9 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
               animation: context.read<DashboardViewModel>().translateSettingsUpController,
               child: SafeArea(
                 child: Container(
+                  color: context.read<DashboardViewModel>().settings
+                      ? Colors.white
+                      : Colors.transparent,
                   margin: EdgeInsets.only(bottom: context.read<DashboardViewModel>().timelinePage?0:135),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
