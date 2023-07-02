@@ -86,13 +86,14 @@ class _MainMenuViewState extends State<MainMenuView> {
                     ///For current page value = 0, so rotation and translation value is zero
                     value = index.toDouble() - (pageController.page??0);
                     // value = (value * 0.012);
-                    value = (value * 0.009);
+                    value = (value * 0.01);
+                   // value = (value * 0.009);
                   }
                   ///Tilted semicircle
                   return Transform.rotate(
                     angle: (math.pi * value),
                     child: Transform.translate(
-                      offset: Offset(0, value.abs() * 500),
+                      offset: Offset(0, value.abs() * 300),
                       child: _cards(index),
                     ),
                   );
@@ -113,6 +114,7 @@ class _MainMenuViewState extends State<MainMenuView> {
       ),
       alignment: Alignment.center,
       margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 20),
+      //margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

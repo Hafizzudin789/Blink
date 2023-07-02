@@ -62,7 +62,8 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
 
     context.read<DashboardViewModel>().translateTimelineDownController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 450),
+      reverseDuration: const Duration(milliseconds: 400),
     );
 
   }
