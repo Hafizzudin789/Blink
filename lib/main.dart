@@ -1,4 +1,4 @@
-import 'package:blink/layout_view.dart';
+import 'package:blink/views/layout/layout_view.dart';
 import 'package:blink/views/dashboard/dashboard_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
