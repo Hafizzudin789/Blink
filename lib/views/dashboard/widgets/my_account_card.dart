@@ -17,11 +17,11 @@ class MyAccountCard extends StatelessWidget {
       children: [
         Container(
           margin: EdgeInsets.symmetric(horizontal: horizontalSpacing, vertical: 44),
-          decoration: const BoxDecoration(
-            // color: Colors.green,
-            // borderRadius: BorderRadius.circular(16),
-            image: DecorationImage(
-              image: AssetImage("assets/image/cardAccount.png")
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            image: const DecorationImage(
+              image: AssetImage("assets/image/cardAccount.png"),
+              fit: BoxFit.cover,
             )
           ),
           child: Padding(

@@ -5,7 +5,6 @@ import 'package:blink/widgets/custom_svg_image.dart';
 import 'package:blink/views/dashboard/dashboard_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../../constant/app_color.dart';
 
 class LayoutView extends StatefulWidget {
