@@ -84,11 +84,15 @@ class DashboardViewModel extends ChangeNotifier {
     translateSidewaysController.reverse();
   }
 
+
   bool timelinePage = false;
+  ScrollController controller = ScrollController();
   showTimeline(bool value) {
     if(value) {
       Future.delayed(const Duration(milliseconds: 500), () {
         bottomNavbarHeight = 0;
+        timelineGlitchAnimation();
+
         notifyListeners();
       },);
       animateForwardTimelinePage();
@@ -104,12 +108,21 @@ class DashboardViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  timelineGlitchAnimation() {
+    controller.animateTo(30, duration: const Duration(milliseconds: 400), curve: Curves.easeIn).then((value) {
+      controller.animateTo(-30, duration: const Duration(milliseconds: 500), curve: Curves.easeInBack);
+    });
+  }
+
+
   disposeControllers() {
     translateSettingsUpController.dispose();
     scaleAnimationController.dispose();
 
     translateSidewaysController.dispose();
     translateTimelineDownController.dispose();
+
+    controller.dispose();
   }
 
 }

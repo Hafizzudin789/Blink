@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../constant/app_color.dart';
 import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
 
+
 class SettingsView extends StatefulWidget {
   const SettingsView({super.key});
 
@@ -24,7 +25,6 @@ class _SettingsViewState extends State<SettingsView> {
           gradientFractionOnEnd: 0.2,
           child: ListView(
             controller: _scrollController,
-            //padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.2),
             children: [
               _settingMenuItem(label: "Freeze this card", iconPath: "assets/setting/freeze.svg"),
               _divider(),
