@@ -58,7 +58,7 @@ class MyAccountCard extends StatelessWidget {
                       const SizedBox(height: 4),
                       const Text("AVAILABLE BALANCE", style: TextStyle(color: gray400Color, fontSize: 10, fontWeight: FontWeight.w600),),
 
-                      SizedBox(height: screenHeight*0.03),
+                      SizedBox(height: screenHeight*0.02),
 
                       const Row(
                         mainAxisSize: MainAxisSize.min,
@@ -70,7 +70,7 @@ class MyAccountCard extends StatelessWidget {
                       ),
                       const Text("ACCOUNT NUMBER", style: TextStyle(color: gray400Color, fontSize: 10, fontWeight: FontWeight.w600),),
 
-                      SizedBox(height: screenHeight*0.03),
+                      SizedBox(height: screenHeight*0.02),
 
                       const Row(
                         mainAxisSize: MainAxisSize.min,

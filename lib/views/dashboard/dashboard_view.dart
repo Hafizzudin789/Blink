@@ -25,7 +25,6 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
   late PageController pageController;
 
 
-
   @override
   void initState() {
     super.initState();
@@ -104,7 +103,7 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
                   color: context.read<DashboardViewModel>().settings
                       ? Colors.white
                       : Colors.transparent,
-                  margin: EdgeInsets.only(bottom: context.read<DashboardViewModel>().timelinePage?0:135),
+                  margin: EdgeInsets.only(bottom: context.read<DashboardViewModel>().timelinePage?0:130),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -158,7 +157,7 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
         },
         itemBuilder: (context, index) {
           return Padding(
-            padding: EdgeInsets.only(bottom: context.read<DashboardViewModel>().timelinePage?135:0),
+            padding: EdgeInsets.only(bottom: context.read<DashboardViewModel>().timelinePage?130:0),
             child: AnimatedBuilder(
               animation: context.read<DashboardViewModel>().translateSidewaysController,
               ///Tilted semicircle
@@ -219,7 +218,7 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
     return AnimatedCrossFade(
       firstChild: const SizedBox(),
       secondChild: Padding(
-        padding: const EdgeInsets.only(top: 16.0, bottom: 8),
+        padding: const EdgeInsets.only(top: 8, bottom: 0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -256,7 +255,7 @@ Widget totalBalance() {
     builder: (context) {
       return Column(
         children: [
-          SizedBox(height: MediaQuery.of(context).size.height * 0.06),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.03),
           const Text("Total Balance", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: blackColor),),
           const SizedBox(height: 4),
           const Text.rich(

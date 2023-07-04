@@ -61,7 +61,7 @@ class _MainMenuViewState extends State<MainMenuView> {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.black26,
-      margin: const EdgeInsets.only(bottom: 135),
+      margin: const EdgeInsets.only(bottom: 130),
       child: Align(
         alignment: Alignment.bottomCenter,
         child: SizedBox(

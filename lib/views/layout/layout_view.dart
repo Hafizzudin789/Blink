@@ -16,6 +16,7 @@ class LayoutView extends StatefulWidget {
 
 class _LayoutViewState extends State<LayoutView> with SingleTickerProviderStateMixin{
 
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<LayoutViewModel>(
@@ -59,10 +60,7 @@ class _LayoutViewState extends State<LayoutView> with SingleTickerProviderStateM
                       items: [
                         const BottomNavigationBarItem(
                           label: "Home",
-                          icon: Padding(
-                            padding: EdgeInsets.only(bottom: 12.0),
-                            child: SVGImage(assetPath: "assets/icons/home.svg"),
-                          ),
+                          icon: SVGImage(assetPath: "assets/icons/home.svg"),
                         ),
                         BottomNavigationBarItem(
                           label: "Main",
@@ -72,7 +70,6 @@ class _LayoutViewState extends State<LayoutView> with SingleTickerProviderStateM
                               const SVGImage(assetPath: "assets/icons/mainButton.svg"),
                               context.watch<LayoutViewModel>().showMainMenu
                                     ? Container(
-                                        margin: const EdgeInsets.only(bottom: 20.0),
                                         padding: const EdgeInsets.all(16),
                                         decoration: const BoxDecoration(
                                           color: Colors.white,
@@ -87,10 +84,7 @@ class _LayoutViewState extends State<LayoutView> with SingleTickerProviderStateM
 
                         const BottomNavigationBarItem(
                           label: "Support",
-                          icon: Padding(
-                            padding: EdgeInsets.only(bottom: 12.0),
-                            child: SVGImage(assetPath: "assets/icons/headPhone.svg"),
-                          ),
+                          icon: SVGImage(assetPath: "assets/icons/headPhone.svg"),
                         )
                       ],
                     ),

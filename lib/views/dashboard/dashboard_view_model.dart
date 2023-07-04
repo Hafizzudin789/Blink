@@ -52,8 +52,8 @@ class DashboardViewModel extends ChangeNotifier {
   }
 
 
+  double bottomNavbarHeight = 130;
 
-  double bottomNavbarHeight = 135;
   bool settings = false;
   showSettingPage(bool value) {
     if(value) {
@@ -63,7 +63,7 @@ class DashboardViewModel extends ChangeNotifier {
       },);
       animateForwardSettingsPage();
     } else {
-      bottomNavbarHeight = 135;
+      bottomNavbarHeight = 130;
       animateReverseSettingsPage();
     }
 
@@ -98,7 +98,7 @@ class DashboardViewModel extends ChangeNotifier {
       animateForwardTimelinePage();
     } else {
       Future.delayed(const Duration(milliseconds: 500), () {
-        bottomNavbarHeight = 135;
+        bottomNavbarHeight = 130;
         notifyListeners();
       },);
 

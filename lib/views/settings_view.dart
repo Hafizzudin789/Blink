@@ -18,7 +18,7 @@ class _SettingsViewState extends State<SettingsView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        margin: EdgeInsets.only(top: (MediaQuery.of(context).size.height * 0.3)-135),
+        margin: EdgeInsets.only(top: (MediaQuery.of(context).size.height * 0.3)-130),
         child: FadingEdgeScrollView.fromScrollView(
           shouldDisposeScrollController: true,
           gradientFractionOnStart: 0.35,
