@@ -48,7 +48,10 @@ class _MainMenuViewState extends State<MainMenuView> {
   void initState() {
     super.initState();
     pageController = PageController(initialPage: pageViewIndex, viewportFraction: 0.3);
-    setState(() {});
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      setState(() {});
+    });
   }
 
   @override
