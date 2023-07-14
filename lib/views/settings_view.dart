@@ -18,13 +18,14 @@ class _SettingsViewState extends State<SettingsView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        margin: EdgeInsets.only(top: (MediaQuery.of(context).size.height * 0.3)-130),
+        margin: EdgeInsets.only(top: (MediaQuery.of(context).size.height * 0.3)-130, bottom: 30),
         child: FadingEdgeScrollView.fromScrollView(
           shouldDisposeScrollController: true,
           gradientFractionOnStart: 0.35,
           gradientFractionOnEnd: 0.2,
           child: ListView(
             controller: _scrollController,
+            // padding: EdgeInsets.symmetric(vertical: 50),
             children: [
               _settingMenuItem(label: "Freeze this card", iconPath: "assets/setting/freeze.svg"),
               _divider(),
