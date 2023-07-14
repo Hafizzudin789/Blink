@@ -70,7 +70,6 @@ class _MainMenuViewState extends State<MainMenuView> {
             itemCount: menuItems.length,
             controller: pageController,
             physics: const ClampingScrollPhysics(),
-            // pageSnapping: false,
             onPageChanged: (int value) {
               setState(() {
                 pageViewIndex = value;
@@ -81,19 +80,35 @@ class _MainMenuViewState extends State<MainMenuView> {
                 animation: pageController,
                 builder: (context, child) {
                   double value = 0;
+
+                  ///Y coordinate
+                  double translateValue = 0;
                   ///Checking if pageController is ready to use
                   if(pageController.position.hasContentDimensions) {
                     ///For current page value = 0, so rotation and translation value is zero
-                    value = index.toDouble() - (pageController.page??0);
-                    // value = (value * 0.012);
+                    double indexFinal = index.toDouble();
+                    value = indexFinal - (pageController.page??0);
                     value = (value * 0.01);
-                   // value = (value * 0.009);
+
+                    if(value.abs()>=0.02) {
+                      translateValue = value.abs() * 500;
+                    } else if(value.abs()>=0.018){
+                      translateValue = value.abs() * 460;
+                    } else if(value.abs()>=0.016){
+                      translateValue = value.abs() * 420;
+                    } else if(value.abs()>=0.014){
+                      translateValue = value.abs() * 380;
+                    } else if(value.abs()>=0.012){
+                      translateValue = value.abs() * 340;
+                    } else {
+                      translateValue = value.abs() * 300;
+                    }
                   }
-                  ///Tilted semicircle
+
                   return Transform.rotate(
                     angle: (math.pi * value),
                     child: Transform.translate(
-                      offset: Offset(0, value.abs() * 300),
+                      offset: Offset(0, translateValue),
                       child: _cards(index),
                     ),
                   );

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../constant/app_color.dart';
-import '../../../widgets/customPattern.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/custom_svg_image.dart';
-import '../../../widgets/elevated_button.dart';
 import 'dart:math' as math;
 
 class DebitCard extends StatefulWidget {
@@ -299,37 +297,11 @@ class _DebitCardState extends State<DebitCard> with SingleTickerProviderStateMix
             ),
           ),
         ),
-
-        ///Transactions button
-        Positioned(
-          bottom: 20,
-          child: AnimatedOpacity(
-            duration: const Duration(milliseconds: 800),
-            opacity: _showButtonsInDebitCard
-                ? 1
-                : 0,
-            child: const ElevatedCustomButton(
-              label: "Transactions",
-              buttonColor: Colors.white,
-              foregroundColor: primaryButtonColor,
-            ),
-          ),
-        ),
       ],
     );
   }
 
   _rotate() {
-    // if(!_animationController.isAnimating) {
-    //   _animationController.isDismissed
-    //       ? _animationController.forward()
-    //       : _animationController.reverse();
-    //
-    //   setState(() {
-    //     _showButtonsInDebitCard = !_showButtonsInDebitCard;
-    //   });
-    // }
-
     if(!_animationController.isAnimating) {
       if(_animationController.isDismissed) {
         _animationController.forward();
