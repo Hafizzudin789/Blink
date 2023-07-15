@@ -10,4 +10,19 @@ class LayoutViewModel extends ChangeNotifier {
     _showMainMenu = !_showMainMenu;
     notifyListeners();
   }
+
+
+  ///Debit card logic
+  bool showButtonsInDebitCard = true;
+  showButtons() {
+    showButtonsInDebitCard = !showButtonsInDebitCard;
+    notifyListeners();
+  }
+
+  ///Credit card logic
+  bool showButtonsInCreditCard = true;
+  showButtonsCreditCard() {
+    showButtonsInCreditCard = !showButtonsInCreditCard;
+    notifyListeners();
+  }
 }

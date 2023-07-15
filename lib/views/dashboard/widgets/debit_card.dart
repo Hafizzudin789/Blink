@@ -1,4 +1,6 @@
+import 'package:blink/views/layout/layout_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../constant/app_color.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/custom_svg_image.dart';
@@ -16,7 +18,7 @@ class _DebitCardState extends State<DebitCard> with SingleTickerProviderStateMix
   late AnimationController _animationController;
   late Animation<double> _cardRotationAnimation;
 
-  bool _showButtonsInDebitCard = true;
+  // bool _showButtonsInDebitCard = true;
 
   @override
   void initState() {
@@ -55,7 +57,7 @@ class _DebitCardState extends State<DebitCard> with SingleTickerProviderStateMix
               borderRadius: BorderRadius.circular(16),
             ),
             child: AnimatedCrossFade(
-              crossFadeState: _showButtonsInDebitCard
+              crossFadeState: context.watch<LayoutViewModel>().showButtonsInDebitCard
                   ? CrossFadeState.showFirst
                   : CrossFadeState.showSecond,
               alignment: Alignment.center,
@@ -276,27 +278,27 @@ class _DebitCardState extends State<DebitCard> with SingleTickerProviderStateMix
           },
         ),
 
-        ///Button
-        Positioned(
-          top: 20,
-          child: AnimatedOpacity(
-            duration: const Duration(milliseconds: 800),
-            opacity: _showButtonsInDebitCard
-                ? 1
-                : 0,
-            child: Container(
-              height: 48,
-              width: 48,
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white,
-                  border: Border.all(color: gray200Color, width: 1)
-              ),
-              child: const SVGImage(assetPath: "assets/icons/audioWave.svg"),
-            ),
-          ),
-        ),
+        // ///Button
+        // Positioned(
+        //   top: 20,
+        //   child: AnimatedOpacity(
+        //     duration: const Duration(milliseconds: 800),
+        //     opacity: _showButtonsInDebitCard
+        //         ? 1
+        //         : 0,
+        //     child: Container(
+        //       height: 48,
+        //       width: 48,
+        //       padding: const EdgeInsets.all(10),
+        //       decoration: BoxDecoration(
+        //           shape: BoxShape.circle,
+        //           color: Colors.white,
+        //           border: Border.all(color: gray200Color, width: 1)
+        //       ),
+        //       child: const SVGImage(assetPath: "assets/icons/audioWave.svg"),
+        //     ),
+        //   ),
+        // ),
       ],
     );
   }
@@ -306,16 +308,21 @@ class _DebitCardState extends State<DebitCard> with SingleTickerProviderStateMix
       if(_animationController.isDismissed) {
         _animationController.forward();
 
-        setState(() {
-          _showButtonsInDebitCard = !_showButtonsInDebitCard;
-        });
+        // setState(() {
+        //   //context.read<LayoutViewModel>().showButtonsInDebitCard = !context.read<LayoutViewModel>().showButtonsInDebitCard;
+        //   context.read<LayoutViewModel>().showButtons();
+        // });
+        context.read<LayoutViewModel>().showButtons();
       } else {
         _animationController.reverse();
-        Future.delayed(const Duration(milliseconds: 500),() {
-          setState(() {
-            _showButtonsInDebitCard = !_showButtonsInDebitCard;
-          });
-        },
+        Future.delayed(const Duration(milliseconds: 500),
+          () {
+            // setState(() {
+            //   //context.read<LayoutViewModel>().showButtonsInDebitCard = !context.read<LayoutViewModel>().showButtonsInDebitCard;
+            //   context.read<LayoutViewModel>().showButtons();
+            // });
+            context.read<LayoutViewModel>().showButtons();
+          },
         );
       }
     }

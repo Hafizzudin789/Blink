@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../constant/app_color.dart';
 import 'dart:math' as math;
+import '../../widgets/custom_svg_image.dart';
+import '../layout/layout_view_model.dart';
 import '../settings_view.dart';
 import 'widgets/debit_card.dart';
 import 'widgets/my_account_card.dart';
@@ -24,6 +26,17 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
 
   late PageController pageController;
 
+  bool get myAccount {
+    return pageViewIndex == 0;
+  }
+
+  bool get myCreditCard {
+    return pageViewIndex == 1;
+  }
+
+  bool get myDebitCard {
+    return pageViewIndex == 2;
+  }
 
   @override
   void initState() {
@@ -64,7 +77,6 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
       duration: const Duration(milliseconds: 450),
       reverseDuration: const Duration(milliseconds: 400),
     );
-
   }
 
   @override
@@ -107,12 +119,12 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                        AnimatedOpacity(
-                          duration: const Duration(milliseconds: 500),
-                          opacity: context.read<DashboardViewModel>().timelinePage ? 0: 1,
-                          child: totalBalance(),
-                        ),
-                        _pageViewWidget(),
+                      AnimatedOpacity(
+                        duration: const Duration(milliseconds: 500),
+                        opacity: context.read<DashboardViewModel>().timelinePage ? 0: 1,
+                        child: totalBalance(),
+                      ),
+                      _pageViewWidget(),
                       _pageViewIndicator(),
                     ],
                   ),
@@ -142,65 +154,229 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
   }
 
   _pageViewWidget() {
+    print(myDebitCard);
     return Expanded(
-      child: PageView.builder(
-        itemCount: 3,
-        controller: pageController,
-        ///If settings page or timeline page is active do not scroll horizontal (swipe)
-        physics: context.watch<DashboardViewModel>().settings || context.watch<DashboardViewModel>().timelinePage
-            ? const NeverScrollableScrollPhysics()
-            : const ClampingScrollPhysics(),
-        onPageChanged: (int value) {
-          setState(() {
-            pageViewIndex = value;
-          });
-        },
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: EdgeInsets.only(bottom: context.read<DashboardViewModel>().timelinePage?130:0),
-            child: AnimatedBuilder(
-              animation: context.read<DashboardViewModel>().translateSidewaysController,
-              ///Tilted semicircle
-              child: AnimatedBuilder(
-                animation: pageController,
-                builder: (context, child) {
-                  double value = 0;
-                  ///Checking if pageController is ready to use
-                  if(pageController.position.hasContentDimensions) {
-                    ///For current page value = 0, so rotation and translation value is zero
-                    value = index.toDouble() - (pageController.page??0);
-                    value = (value * 0.012);
-                  }
+      child: Stack(
+        alignment: Alignment.topCenter,
+        children: [
+          PageView.builder(
+            itemCount: 3,
+            controller: pageController,
+            ///If settings page or timeline page is active do not scroll horizontal (swipe)
+            physics: context.watch<DashboardViewModel>().settings || context.watch<DashboardViewModel>().timelinePage
+                ? const NeverScrollableScrollPhysics()
+                : const ClampingScrollPhysics(),
+            onPageChanged: (int value) {
+
+              ///Flip card bug fix
+              if(value == 0 && !context.read<LayoutViewModel>().showButtonsInDebitCard) {
+                context.read<LayoutViewModel>().showButtons();
+              }
+
+              setState(() {
+                pageViewIndex = value;
+              });
+            },
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: EdgeInsets.only(bottom: context.read<DashboardViewModel>().timelinePage?130:0),
+                child: AnimatedBuilder(
+                  animation: context.read<DashboardViewModel>().translateSidewaysController,
                   ///Tilted semicircle
-                  return Transform.rotate(
-                    angle: (math.pi * value),
-                    child: Transform.translate(
-                      offset: Offset(0, value.abs() * 500),
-                      child: AnimatedOpacity(
-                        opacity: index == pageViewIndex
-                            ? 1
-                            : 0.5,
-                        duration: const Duration(milliseconds: 400),
-                        child: _cards(index),
+                  child: AnimatedBuilder(
+                    animation: pageController,
+                    child: _cards(index),
+                    builder: (context, child) {
+                      double value = 0;
+                      ///Checking if pageController is ready to use
+                      if(pageController.position.hasContentDimensions) {
+                        ///For current page value = 0, so rotation and translation value is zero
+                        value = index.toDouble() - (pageController.page??0);
+                        value = (value * 0.012);
+                      }
+                      ///Tilted semicircle
+                      return Transform.rotate(
+                        angle: (math.pi * value),
+                        child: Transform.translate(
+                          offset: Offset(0, value.abs() * 500),
+                          child: AnimatedOpacity(
+                            opacity: index == pageViewIndex
+                                ? 1
+                                : 0.5,
+                            duration: const Duration(milliseconds: 400),
+                            child: child!,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  builder: (context, child) {
+                  ///Side ways translation timeline animation
+                    return Transform.translate(
+                      offset: pageViewIndex == index
+                          ? const Offset(0, 0)
+                          : pageViewIndex < index
+                              ? Offset(context.read<DashboardViewModel>().translateSidewaysController.value*100, 0)
+                              : Offset(-context.read<DashboardViewModel>().translateSidewaysController.value*100, 0) ,
+                      child: child,
+                    );
+                  }
+                ),
+              );
+            },
+          ),
+
+          ///Timeline Button
+          ///For My Account and My credit card
+          Positioned(
+            top: 20,
+            child: (!context.watch<LayoutViewModel>().showButtonsInDebitCard && pageViewIndex ==2)
+                ? const SizedBox()
+                : InkWell(
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    onTap: () {
+                      if(myCreditCard) {
+                        if(!context.read<LayoutViewModel>().showButtonsInCreditCard) return;
+                        context.read<DashboardViewModel>().showTimeline(!context.read<DashboardViewModel>().timelinePage);
+                      }
+                      if(myAccount) {
+                        //TODO:
+                      }
+                    },
+                    child: AnimatedOpacity(
+                      ///For Credit Card
+                      duration: const Duration(milliseconds: 500),
+                      opacity: context.watch<LayoutViewModel>().showButtonsInCreditCard
+                          ? 1
+                          : 0,
+                      child: AnimatedBuilder(
+                        animation: pageController,
+                        builder: (BuildContext context, Widget? child) {
+                          double translateYOffset = 0;
+                          double opacity = 0;
+                          if(pageController.position.hasContentDimensions) {
+                            opacity = pageViewIndex - (pageController.page??0);
+                            translateYOffset = pageViewIndex - (pageController.page??0);
+                          }
+                          return Transform.translate(
+                            offset: Offset(0, translateYOffset.abs() * -40),
+                            child: Opacity(
+                              opacity: (opacity.abs() -1).abs(),
+                              child: child!,
+                            ),
+                          );
+                        },
+                        child: Container(
+                          height: 48,
+                          width: 48,
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white,
+                              border: Border.all(color: gray200Color, width: 1)
+                          ),
+                          //child: const SVGImage(assetPath: "assets/icons/audioWave.svg"),
+                          ///For Credit Card
+                          child: AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 500),
+                            child: !context.read<DashboardViewModel>().timelinePage
+                                ? const SVGImage(assetPath: "assets/icons/audioWave.svg")
+                                : const SVGImage(assetPath: "assets/icons/up.svg"),
+                          ),
+                        ),
                       ),
                     ),
-                  );
-                },
-              ),
-              builder: (context, child) {
-              ///Side ways translation timeline animation
-                return Transform.translate(
-                  offset: pageViewIndex == index
-                      ? const Offset(0, 0)
-                      : pageViewIndex < index
-                          ? Offset(context.read<DashboardViewModel>().translateSidewaysController.value*100, 0)
-                          : Offset(-context.read<DashboardViewModel>().translateSidewaysController.value*100, 0) ,
-                  child: child,
-                );
-              }
-            ),
-          );
-        },
+                  ),
+          ),
+
+          ///Transactions button
+          ///For My Account and My credit card
+          Positioned(
+            bottom: 20,
+            // child: Container(color: Colors.red,child: Text("Hello Brother")),
+            child: myDebitCard
+                ///No transaction button for debit card
+                ? const SizedBox()
+                : InkWell(
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    onTap: () {
+                      if(myCreditCard) {
+                        if(context.read<DashboardViewModel>().settings) {
+                          context.read<DashboardViewModel>().showSettingPage(false);
+                          return;
+                        }
+
+                        if(context.read<LayoutViewModel>().showButtonsInCreditCard) {
+                          context.read<DashboardViewModel>().goToTransactionPage(context);
+                        }
+                      }
+                      if(myAccount) {
+                        ///TODO:
+                      }
+                    },
+                    child: AnimatedOpacity(
+                        ///For credit card
+                        duration: const Duration(milliseconds: 500),
+                        opacity: context.watch<LayoutViewModel>().showButtonsInCreditCard
+                            ? 1
+                            : 0,
+                        child: AnimatedBuilder(
+                          animation: pageController,
+                          builder: (BuildContext context, Widget? child) {
+                            double translateYOffset = 0;
+                            double opacity = 0;
+                            if(pageController.position.hasContentDimensions) {
+                              opacity = pageViewIndex - (pageController.page??0);
+                              translateYOffset = pageViewIndex - (pageController.page??0);
+                            }
+                            return Transform.translate(
+                              offset: Offset(0, translateYOffset.abs() * 40),
+                              child: Opacity(
+                                opacity: (opacity.abs() -1).abs(),
+                                child: child!,
+                              ),
+                            );
+                          },
+                          ///For credit card
+                          child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 500),
+                              curve: Curves.easeInOut,
+                              width: context.watch<DashboardViewModel>().settings
+                                  ? 48
+                                  : 150,
+                              height: context.watch<DashboardViewModel>().settings
+                                  ? 48
+                                  : 44,
+                              alignment: Alignment.center,
+
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(color: gray200Color, width: 1),
+                                borderRadius: BorderRadius.circular(100),
+                                boxShadow: const [
+                                  BoxShadow(color: gray200Color, blurRadius: 5, spreadRadius: 0.1, offset: Offset(0,4))
+                                ],
+                              ),
+                              child: AnimatedCrossFade(
+                                duration: const Duration(milliseconds: 500),
+                                reverseDuration: const Duration(milliseconds: 500),
+                                firstCurve: Curves.easeIn,
+                                secondCurve: Curves.easeIn,
+                                alignment: Alignment.center,
+                                crossFadeState: context.watch<DashboardViewModel>().settings
+                                    ? CrossFadeState.showFirst:CrossFadeState.showSecond,
+                                firstChild: const SVGImage(assetPath: "assets/icons/down.svg"),
+                                secondChild: const Text("Transactions", style: TextStyle(color: primaryButtonColor, fontSize: 12, fontWeight: FontWeight.w600),),
+                              ),
+                          ),
+                        ),
+                      ),
+                  ),
+          ),
+
+        ],
       ),
     );
   }

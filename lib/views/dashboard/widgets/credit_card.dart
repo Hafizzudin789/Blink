@@ -1,3 +1,4 @@
+import 'package:blink/views/layout/layout_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../constant/app_color.dart';
@@ -19,7 +20,7 @@ class _CreditCardState extends State<CreditCard> with SingleTickerProviderStateM
   late AnimationController _cardRotationController;
   late Animation<double> _cardRotationAnimation;
 
-  bool _showButtonsInCreditCard = true;
+  // bool _showButtonsInCreditCard = true;
 
 
   @override
@@ -67,7 +68,7 @@ class _CreditCardState extends State<CreditCard> with SingleTickerProviderStateM
               ///While rotating the card
               ///Change the content of the card
               child: AnimatedCrossFade(
-                crossFadeState: _showButtonsInCreditCard
+                crossFadeState: context.watch<LayoutViewModel>().showButtonsInCreditCard
                     ? CrossFadeState.showFirst
                     : CrossFadeState.showSecond,
                 alignment: Alignment.center,
@@ -403,93 +404,93 @@ class _CreditCardState extends State<CreditCard> with SingleTickerProviderStateM
           },
         ),
 
-        ///Timeline Button
-        Positioned(
-          top: 22,
-          child: InkWell(
-            onTap: () {
-              if(!_showButtonsInCreditCard) return;
-              context.read<DashboardViewModel>().showTimeline(!context.read<DashboardViewModel>().timelinePage);
-            },
-            child: AnimatedOpacity(
-              duration: const Duration(milliseconds: 500),
-              opacity: _showButtonsInCreditCard
-                  ? 1
-                  : 0,
-              child: Container(
-                height: 48,
-                width: 48,
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white,
-                    border: Border.all(color: gray200Color, width: 1)),
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 500),
-                  child: !context.read<DashboardViewModel>().timelinePage
-                      ? const SVGImage(assetPath: "assets/icons/audioWave.svg")
-                      : const SVGImage(assetPath: "assets/icons/up.svg"),
-                ),
-              ),
-            ),
-          ),
-        ),
+        // ///Timeline Button
+        // Positioned(
+        //   top: 22,
+        //   child: InkWell(
+        //     onTap: () {
+        //       if(!context.watch<LayoutViewModel>().showButtonsInCreditCard) return;
+        //       context.read<DashboardViewModel>().showTimeline(!context.read<DashboardViewModel>().timelinePage);
+        //     },
+        //     child: AnimatedOpacity(
+        //       duration: const Duration(milliseconds: 500),
+        //       opacity: context.watch<LayoutViewModel>().showButtonsInCreditCard
+        //           ? 1
+        //           : 0,
+        //       child: Container(
+        //         height: 48,
+        //         width: 48,
+        //         padding: const EdgeInsets.all(10),
+        //         decoration: BoxDecoration(
+        //             shape: BoxShape.circle,
+        //             color: Colors.white,
+        //             border: Border.all(color: gray200Color, width: 1)),
+        //         child: AnimatedSwitcher(
+        //           duration: const Duration(milliseconds: 500),
+        //           child: !context.read<DashboardViewModel>().timelinePage
+        //               ? const SVGImage(assetPath: "assets/icons/audioWave.svg")
+        //               : const SVGImage(assetPath: "assets/icons/up.svg"),
+        //         ),
+        //       ),
+        //     ),
+        //   ),
+        // ),
 
-        ///Transactions button
-        ///Dropdown button
-        Positioned(
-          bottom: 22,
-          ///Toggle between Transaction and Down Arrow button
-          child: AnimatedOpacity(
-            duration: const Duration(milliseconds: 500),
-            opacity: _showButtonsInCreditCard
-                ? 1
-                : 0,
-            child: InkWell(
-              onTap: () {
-                if(context.read<DashboardViewModel>().settings) {
-                  context.read<DashboardViewModel>().showSettingPage(false);
-                  return;
-                }
-
-                if(_showButtonsInCreditCard) {
-                  context.read<DashboardViewModel>().goToTransactionPage(context);
-                }
-              },
-              child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 500),
-                  curve: Curves.easeInOut,
-                  width: context.watch<DashboardViewModel>().settings
-                      ? 48
-                      : 150,
-                  height: context.watch<DashboardViewModel>().settings
-                      ? 48
-                      : 44,
-                  alignment: Alignment.center,
-
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(color: gray200Color, width: 1),
-                    borderRadius: BorderRadius.circular(100),
-                    boxShadow: const [
-                      BoxShadow(color: gray200Color, blurRadius: 5, spreadRadius: 0.1, offset: Offset(0,4))
-                    ],
-                  ),
-                  child: AnimatedCrossFade(
-                    duration: const Duration(milliseconds: 500),
-                    reverseDuration: const Duration(milliseconds: 500),
-                    firstCurve: Curves.easeIn,
-                    secondCurve: Curves.easeIn,
-                    alignment: Alignment.center,
-                    crossFadeState: context.watch<DashboardViewModel>().settings
-                        ? CrossFadeState.showFirst:CrossFadeState.showSecond,
-                    firstChild: const SVGImage(assetPath: "assets/icons/down.svg"),
-                    secondChild: const Text("Transactions", style: TextStyle(color: primaryButtonColor, fontSize: 12, fontWeight: FontWeight.w600),),
-                  )
-              ),
-            ),
-          ),
-        ),
+        // ///Transactions button
+        // ///Dropdown button
+        // Positioned(
+        //   bottom: 22,
+        //   ///Toggle between Transaction and Down Arrow button
+        //   child: AnimatedOpacity(
+        //     duration: const Duration(milliseconds: 500),
+        //     opacity: context.watch<LayoutViewModel>().showButtonsInCreditCard
+        //         ? 1
+        //         : 0,
+        //     child: InkWell(
+        //       onTap: () {
+        //         if(context.read<DashboardViewModel>().settings) {
+        //           context.read<DashboardViewModel>().showSettingPage(false);
+        //           return;
+        //         }
+        //
+        //         if(context.read<LayoutViewModel>().showButtonsInCreditCard) {
+        //           context.read<DashboardViewModel>().goToTransactionPage(context);
+        //         }
+        //       },
+        //       child: AnimatedContainer(
+        //           duration: const Duration(milliseconds: 500),
+        //           curve: Curves.easeInOut,
+        //           width: context.watch<DashboardViewModel>().settings
+        //               ? 48
+        //               : 150,
+        //           height: context.watch<DashboardViewModel>().settings
+        //               ? 48
+        //               : 44,
+        //           alignment: Alignment.center,
+        //
+        //           decoration: BoxDecoration(
+        //             color: Colors.white,
+        //             border: Border.all(color: gray200Color, width: 1),
+        //             borderRadius: BorderRadius.circular(100),
+        //             boxShadow: const [
+        //               BoxShadow(color: gray200Color, blurRadius: 5, spreadRadius: 0.1, offset: Offset(0,4))
+        //             ],
+        //           ),
+        //           child: AnimatedCrossFade(
+        //             duration: const Duration(milliseconds: 500),
+        //             reverseDuration: const Duration(milliseconds: 500),
+        //             firstCurve: Curves.easeIn,
+        //             secondCurve: Curves.easeIn,
+        //             alignment: Alignment.center,
+        //             crossFadeState: context.watch<DashboardViewModel>().settings
+        //                 ? CrossFadeState.showFirst:CrossFadeState.showSecond,
+        //             firstChild: const SVGImage(assetPath: "assets/icons/down.svg"),
+        //             secondChild: const Text("Transactions", style: TextStyle(color: primaryButtonColor, fontSize: 12, fontWeight: FontWeight.w600),),
+        //           )
+        //       ),
+        //     ),
+        //   ),
+        // ),
       ],
     );
   }
@@ -500,15 +501,17 @@ class _CreditCardState extends State<CreditCard> with SingleTickerProviderStateM
       if(_cardRotationController.isDismissed) {
         _cardRotationController.forward();
 
-        setState(() {
-          _showButtonsInCreditCard = !_showButtonsInCreditCard;
-        });
+        context.read<LayoutViewModel>().showButtonsCreditCard();
+        // setState(() {
+        //   _showButtonsInCreditCard = !_showButtonsInCreditCard;
+        // });
       } else {
         _cardRotationController.reverse();
         Future.delayed(const Duration(milliseconds: 500),() {
-          setState(() {
-            _showButtonsInCreditCard = !_showButtonsInCreditCard;
-          });
+          context.read<LayoutViewModel>().showButtonsCreditCard();
+          // setState(() {
+          //   _showButtonsInCreditCard = !_showButtonsInCreditCard;
+          // });
         },
         );
       }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../../constant/app_color.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/custom_svg_image.dart';
-import '../../../widgets/elevated_button.dart';
 
 
 class MyAccountCard extends StatelessWidget {
@@ -124,31 +123,31 @@ class MyAccountCard extends StatelessWidget {
           ),
         ),
 
-        ///Button
-        Positioned(
-          top: 20,
-          child: Container(
-            height: 48,
-            width: 48,
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white,
-                border: Border.all(color: gray200Color, width: 1)
-            ),
-            child: const SVGImage(assetPath: "assets/icons/audioWave.svg"),
-          ),
-        ),
+        // ///Button
+        // Positioned(
+        //   top: 20,
+        //   child: Container(
+        //     height: 48,
+        //     width: 48,
+        //     padding: const EdgeInsets.all(10),
+        //     decoration: BoxDecoration(
+        //         shape: BoxShape.circle,
+        //         color: Colors.white,
+        //         border: Border.all(color: gray200Color, width: 1)
+        //     ),
+        //     child: const SVGImage(assetPath: "assets/icons/audioWave.svg"),
+        //   ),
+        // ),
 
-        ///Transactions button
-        const Positioned(
-          bottom: 20,
-          child: ElevatedCustomButton(
-            label: "Transactions",
-            buttonColor: Colors.white,
-            foregroundColor: primaryButtonColor,
-          ),
-        ),
+        // ///Transactions button
+        // const Positioned(
+        //   bottom: 20,
+        //   child: ElevatedCustomButton(
+        //     label: "Transactions",
+        //     buttonColor: Colors.white,
+        //     foregroundColor: primaryButtonColor,
+        //   ),
+        // ),
       ],
     );
   }
