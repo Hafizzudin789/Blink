@@ -1,10 +1,11 @@
-import 'package:blink/views/dashboard/dashboard_view_model.dart';
-import 'package:blink/views/dashboard/widgets/credit_card.dart';
-import 'package:blink/views/time_line_view.dart';
+import 'package:blink/feature/dashboard/dashboard_view_model.dart';
+import 'package:blink/feature/dashboard/widgets/credit_card.dart';
+import 'package:blink/feature/time_line_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../constant/app_color.dart';
 import 'dart:math' as math;
+import '../../constant/constants.dart';
 import '../../widgets/custom_svg_image.dart';
 import '../layout/layout_view_model.dart';
 import '../settings_view.dart';
@@ -42,6 +43,7 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
   void initState() {
     super.initState();
     pageController = PageController(initialPage: pageViewIndex, viewportFraction: 0.8);
+    context.read<DashboardViewModel>().controller = ScrollController();
 
     context.read<DashboardViewModel>().translateSettingsUpController = AnimationController(
       vsync: this,
@@ -83,7 +85,9 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
   void dispose() {
     super.dispose();
     pageController.dispose();
-    context.read<DashboardViewModel>().disposeControllers();
+    if(!mounted) {
+      context.read<DashboardViewModel>().disposeControllers();
+    }
   }
 
 
@@ -101,9 +105,9 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
             switchInCurve: Curves.easeInOut,
             switchOutCurve: Curves.linearToEaseOut,
             child: context.read<DashboardViewModel>().settings
-                ? const SettingsView(key: Key("Setting"),)
+                ? const SettingsView(key: Key("Setting"))
                 : context.read<DashboardViewModel>().timelinePage
-                  ? const TimelineView(key: Key("Timeline"),)
+                  ? const TimelineView(key: Key("Timeline"))
                   : const SizedBox(),
           ),
           AnimatedBuilder(
@@ -115,7 +119,7 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
                   color: context.read<DashboardViewModel>().settings
                       ? Colors.white
                       : Colors.transparent,
-                  margin: EdgeInsets.only(bottom: context.read<DashboardViewModel>().timelinePage?0:130),
+                  margin: EdgeInsets.only(bottom: context.read<DashboardViewModel>().timelinePage?0:bottomBarHeight),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -178,10 +182,21 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
             },
             itemBuilder: (context, index) {
               return Padding(
-                padding: EdgeInsets.only(bottom: context.read<DashboardViewModel>().timelinePage?130:0),
+                padding: EdgeInsets.only(bottom: context.read<DashboardViewModel>().timelinePage?bottomBarHeight:0),
                 child: AnimatedBuilder(
                   animation: context.read<DashboardViewModel>().translateSidewaysController,
                   ///Tilted semicircle
+                  builder: (context, child) {
+                  ///Side ways translation timeline animation
+                    return Transform.translate(
+                      offset: pageViewIndex == index
+                          ? const Offset(0, 0)
+                          : pageViewIndex < index
+                              ? Offset(context.read<DashboardViewModel>().translateSidewaysController.value*100, 0)
+                              : Offset(-context.read<DashboardViewModel>().translateSidewaysController.value*100, 0) ,
+                      child: child,
+                    );
+                  },
                   child: AnimatedBuilder(
                     animation: pageController,
                     child: _cards(index),
@@ -209,17 +224,6 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
                       );
                     },
                   ),
-                  builder: (context, child) {
-                  ///Side ways translation timeline animation
-                    return Transform.translate(
-                      offset: pageViewIndex == index
-                          ? const Offset(0, 0)
-                          : pageViewIndex < index
-                              ? Offset(context.read<DashboardViewModel>().translateSidewaysController.value*100, 0)
-                              : Offset(-context.read<DashboardViewModel>().translateSidewaysController.value*100, 0) ,
-                      child: child,
-                    );
-                  }
                 ),
               );
             },

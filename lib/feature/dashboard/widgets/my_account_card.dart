@@ -122,32 +122,6 @@ class MyAccountCard extends StatelessWidget {
             ),
           ),
         ),
-
-        // ///Button
-        // Positioned(
-        //   top: 20,
-        //   child: Container(
-        //     height: 48,
-        //     width: 48,
-        //     padding: const EdgeInsets.all(10),
-        //     decoration: BoxDecoration(
-        //         shape: BoxShape.circle,
-        //         color: Colors.white,
-        //         border: Border.all(color: gray200Color, width: 1)
-        //     ),
-        //     child: const SVGImage(assetPath: "assets/icons/audioWave.svg"),
-        //   ),
-        // ),
-
-        // ///Transactions button
-        // const Positioned(
-        //   bottom: 20,
-        //   child: ElevatedCustomButton(
-        //     label: "Transactions",
-        //     buttonColor: Colors.white,
-        //     foregroundColor: primaryButtonColor,
-        //   ),
-        // ),
       ],
     );
   }

@@ -1,4 +1,4 @@
-import 'package:blink/views/dashboard/dashboard_view_model.dart';
+import 'package:blink/feature/dashboard/dashboard_view_model.dart';
 import 'package:blink/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

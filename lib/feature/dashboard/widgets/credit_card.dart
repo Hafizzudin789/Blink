@@ -1,4 +1,4 @@
-import 'package:blink/views/layout/layout_view_model.dart';
+import 'package:blink/feature/layout/layout_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../constant/app_color.dart';
@@ -19,8 +19,6 @@ class _CreditCardState extends State<CreditCard> with SingleTickerProviderStateM
 
   late AnimationController _cardRotationController;
   late Animation<double> _cardRotationAnimation;
-
-  // bool _showButtonsInCreditCard = true;
 
 
   @override

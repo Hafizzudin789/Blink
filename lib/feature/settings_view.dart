@@ -2,6 +2,7 @@ import 'package:blink/widgets/custom_svg_image.dart';
 import 'package:flutter/material.dart';
 import '../constant/app_color.dart';
 import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
+import '../constant/constants.dart';
 
 
 class SettingsView extends StatefulWidget {
@@ -14,18 +15,24 @@ class SettingsView extends StatefulWidget {
 class _SettingsViewState extends State<SettingsView> {
 
   final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        margin: EdgeInsets.only(top: (MediaQuery.of(context).size.height * 0.3)-130, bottom: 30),
+        margin: EdgeInsets.only(top: (MediaQuery.of(context).size.height * 0.3)-bottomBarHeight, bottom: 30),
         child: FadingEdgeScrollView.fromScrollView(
           shouldDisposeScrollController: true,
           gradientFractionOnStart: 0.35,
           gradientFractionOnEnd: 0.2,
           child: ListView(
             controller: _scrollController,
-            // padding: EdgeInsets.symmetric(vertical: 50),
             children: [
               _settingMenuItem(label: "Freeze this card", iconPath: "assets/setting/freeze.svg"),
               _divider(),

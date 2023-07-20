@@ -1,4 +1,4 @@
-import 'package:blink/views/layout/layout_view_model.dart';
+import 'package:blink/feature/layout/layout_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../constant/app_color.dart';
@@ -18,7 +18,6 @@ class _DebitCardState extends State<DebitCard> with SingleTickerProviderStateMix
   late AnimationController _animationController;
   late Animation<double> _cardRotationAnimation;
 
-  // bool _showButtonsInDebitCard = true;
 
   @override
   void initState() {
@@ -160,7 +159,7 @@ class _DebitCardState extends State<DebitCard> with SingleTickerProviderStateMix
                               BoxShadow(color: Colors.black26, blurRadius: 10, spreadRadius: 0.1),
                             ],
                           ),
-                          child: const SVGImage(assetPath: "assets/icons/settings.svg",),
+                          child: const SVGImage(assetPath: "assets/icons/settings.svg"),
                         ),
                       ],
                     ),
@@ -259,8 +258,6 @@ class _DebitCardState extends State<DebitCard> with SingleTickerProviderStateMix
                           Text("LINKED ACCOUNT NUMBER", style: TextStyle(color: gray400Color, fontSize: 10, fontWeight: FontWeight.w600),),
                         ],
                       ),
-
-
                     ],
                   ),
                 ),

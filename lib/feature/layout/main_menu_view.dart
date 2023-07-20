@@ -1,7 +1,10 @@
+import 'package:blink/feature/layout/layout_view_model.dart';
 import 'package:blink/widgets/custom_svg_image.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'dart:math' as math;
 import '../../constant/app_color.dart';
+import '../../constant/constants.dart';
 
 
 class MainMenuView extends StatefulWidget {
@@ -64,7 +67,7 @@ class _MainMenuViewState extends State<MainMenuView> {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.black26,
-      margin: const EdgeInsets.only(bottom: 130),
+      margin: EdgeInsets.only(bottom: bottomBarHeight),
       child: Align(
         alignment: Alignment.bottomCenter,
         child: SizedBox(
@@ -125,37 +128,46 @@ class _MainMenuViewState extends State<MainMenuView> {
   }
 
   _cards(int index) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8)
-      ),
-      alignment: Alignment.center,
-      margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 20),
-      //margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 64,
-            height: 64,
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: gray200Color, width: 1.5),
+    LayoutViewModel layoutViewModel = context.read<LayoutViewModel>();
+    return InkWell(
+      splashColor: primaryButtonColor,
+      highlightColor: primaryButtonColor,
+      onTap: () {
+        layoutViewModel.onClickMainMenu(index, context);
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8)
+        ),
+        alignment: Alignment.center,
+        margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 64,
+              height: 64,
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: gray200Color, width: 1.5),
+              ),
+              child: SVGImage(
+                assetPath: menuItems[index]["icon"],
+              ),
             ),
-            child: SVGImage(
-              assetPath: menuItems[index]["icon"],
+            const SizedBox(height: 12),
+            Text(
+              menuItems[index]["title"],
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.w600),
             ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            menuItems[index]["title"],
-            textAlign: TextAlign.center,
-            style: const TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.w600),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
+
+
 }

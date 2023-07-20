@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-
+import '../../constant/constants.dart';
 import '../navigation_transitions.dart';
 import '../transaction_view.dart';
 
@@ -52,7 +52,7 @@ class DashboardViewModel extends ChangeNotifier {
   }
 
 
-  double bottomNavbarHeight = 130;
+  double bottomNavbarHeight = bottomBarHeight;
 
   bool settings = false;
   showSettingPage(bool value) {
@@ -63,7 +63,7 @@ class DashboardViewModel extends ChangeNotifier {
       },);
       animateForwardSettingsPage();
     } else {
-      bottomNavbarHeight = 130;
+      bottomNavbarHeight = bottomBarHeight;
       animateReverseSettingsPage();
     }
 
@@ -86,7 +86,7 @@ class DashboardViewModel extends ChangeNotifier {
 
 
   bool timelinePage = false;
-  ScrollController controller = ScrollController();
+  ScrollController? controller;
   showTimeline(bool value) {
     if(value) {
       Future.delayed(const Duration(milliseconds: 500), () {
@@ -98,7 +98,7 @@ class DashboardViewModel extends ChangeNotifier {
       animateForwardTimelinePage();
     } else {
       Future.delayed(const Duration(milliseconds: 500), () {
-        bottomNavbarHeight = 130;
+        bottomNavbarHeight = bottomBarHeight;
         notifyListeners();
       },);
 
@@ -109,8 +109,8 @@ class DashboardViewModel extends ChangeNotifier {
   }
 
   timelineGlitchAnimation() {
-    controller.animateTo(30, duration: const Duration(milliseconds: 400), curve: Curves.easeIn).then((value) {
-      controller.animateTo(-30, duration: const Duration(milliseconds: 500), curve: Curves.easeInBack);
+    controller!.animateTo(30, duration: const Duration(milliseconds: 400), curve: Curves.easeIn).then((value) {
+      controller!.animateTo(-30, duration: const Duration(milliseconds: 500), curve: Curves.easeInBack);
     });
   }
 
@@ -122,7 +122,7 @@ class DashboardViewModel extends ChangeNotifier {
     translateSidewaysController.dispose();
     translateTimelineDownController.dispose();
 
-    controller.dispose();
+    controller?.dispose();
   }
 
 }

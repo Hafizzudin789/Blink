@@ -1,8 +1,9 @@
-import 'package:blink/views/layout/layout_view_model.dart';
-import 'package:blink/views/dashboard/dashboard_view_model.dart';
-import 'package:blink/views/layout/main_menu_view.dart';
+import 'package:blink/feature/layout/layout_view_model.dart';
+import 'package:blink/feature/dashboard/dashboard_view_model.dart';
+import 'package:blink/feature/layout/main_menu_view.dart';
+import 'package:blink/feature/payment/payment_view.dart';
 import 'package:blink/widgets/custom_svg_image.dart';
-import 'package:blink/views/dashboard/dashboard_view.dart';
+import 'package:blink/feature/dashboard/dashboard_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../constant/app_color.dart';
@@ -22,14 +23,17 @@ class _LayoutViewState extends State<LayoutView> with SingleTickerProviderStateM
     return ChangeNotifierProvider<LayoutViewModel>(
       create: (_) => LayoutViewModel(),
       lazy: true,
-      child: const DashboardView(),
       builder: (context, child) {
         return Scaffold(
           body: Stack(
             alignment: Alignment.bottomCenter,
             children: [
               ///Main View
-              child!,
+                context.watch<LayoutViewModel>().bottomBarIndex == BottomBarIndex.home
+                    ? const DashboardView()
+                    : context.watch<LayoutViewModel>().bottomBarIndex == BottomBarIndex.payment
+                        ? const PaymentView()
+                        : const DashboardView(),
 
               ///Bottom Navigation Bar
               AnimatedOpacity(
@@ -106,16 +110,16 @@ class _LayoutViewState extends State<LayoutView> with SingleTickerProviderStateM
   onTap(int bottomIndex, LayoutViewModel viewModel) {
     switch(bottomIndex) {
       case 0:
-        if(viewModel.showMainMenu) {return;}
+        viewModel.changeBottomBarIndex(BottomBarIndex.home, context);
         break;
       case 1:
         viewModel.openMainMenu();
         break;
       case 2:
-        if(viewModel.showMainMenu) {return;}
+        // if(viewModel.showMainMenu) {return;}
         break;
       default:
-        if(viewModel.showMainMenu) {return;}
+        // if(viewModel.showMainMenu) {return;}
         break;
     }
   }

@@ -1,5 +1,5 @@
-import 'package:blink/views/layout/layout_view.dart';
-import 'package:blink/views/dashboard/dashboard_view_model.dart';
+import 'package:blink/feature/layout/layout_view.dart';
+import 'package:blink/feature/dashboard/dashboard_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -16,7 +16,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        // ChangeNotifierProvider(create: (_) => LayoutViewModel()),
         ChangeNotifierProvider(create: (_) => DashboardViewModel()),
       ],
       child: GestureDetector(

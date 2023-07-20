@@ -1,0 +1,1 @@
+double bottomBarHeight = 130;
