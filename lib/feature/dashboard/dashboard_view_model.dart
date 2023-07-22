@@ -3,6 +3,7 @@ import '../../constant/constants.dart';
 import '../navigation_transitions.dart';
 import '../transaction_view.dart';
 
+
 class DashboardViewModel extends ChangeNotifier {
 
   late AnimationController translateSettingsUpController;
@@ -53,17 +54,20 @@ class DashboardViewModel extends ChangeNotifier {
 
 
   double bottomNavbarHeight = bottomBarHeight;
+  changeBottomNavbarHeight(double value) {
+    bottomNavbarHeight = value;
+    notifyListeners();
+  }
 
   bool settings = false;
   showSettingPage(bool value) {
     if(value) {
       Future.delayed(const Duration(milliseconds: 300), () {
-        bottomNavbarHeight = 0;
-        notifyListeners();
+        changeBottomNavbarHeight(0);
       },);
       animateForwardSettingsPage();
     } else {
-      bottomNavbarHeight = bottomBarHeight;
+      changeBottomNavbarHeight(bottomBarHeight);
       animateReverseSettingsPage();
     }
 
@@ -124,5 +128,4 @@ class DashboardViewModel extends ChangeNotifier {
 
     controller?.dispose();
   }
-
 }

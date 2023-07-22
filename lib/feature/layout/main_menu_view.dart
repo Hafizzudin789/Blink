@@ -55,6 +55,7 @@ class _MainMenuViewState extends State<MainMenuView> with SingleTickerProviderSt
 
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 250),
+      reverseDuration: const Duration(milliseconds: 100),
       vsync: this,
     );
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -141,7 +142,21 @@ class _MainMenuViewState extends State<MainMenuView> with SingleTickerProviderSt
     LayoutViewModel layoutViewModel = context.read<LayoutViewModel>();
     return GestureDetector(
       onTap: () {
-        layoutViewModel.onClickMainMenu(index, context);
+        setState(() {
+          tappedMainMenuIndex = index;
+          tappedMainMenuColor = primaryButtonColor;
+          tappedMainMenuContentColor = Colors.white;
+        });
+        _animationController.forward();
+        Future.delayed(const Duration(milliseconds: 50), () {
+          setState(() {
+            tappedMainMenuColor = Colors.white;
+            tappedMainMenuContentColor = Colors.black;
+          });
+          _animationController.reverse();
+
+          Future.delayed(const Duration(milliseconds: 50),() {layoutViewModel.onClickMainMenu(index, context);});
+        });
       },
       onPanDown: (_) {
         setState(() {

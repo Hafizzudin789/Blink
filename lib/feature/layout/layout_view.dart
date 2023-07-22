@@ -2,6 +2,7 @@ import 'package:blink/feature/layout/layout_view_model.dart';
 import 'package:blink/feature/dashboard/dashboard_view_model.dart';
 import 'package:blink/feature/layout/main_menu_view.dart';
 import 'package:blink/feature/payment/payment_view.dart';
+import 'package:blink/feature/payment/payment_view_model.dart';
 import 'package:blink/widgets/custom_svg_image.dart';
 import 'package:blink/feature/dashboard/dashboard_view.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +40,7 @@ class _LayoutViewState extends State<LayoutView> with SingleTickerProviderStateM
               AnimatedOpacity(
                 duration: const Duration(milliseconds: 300),
                 opacity: context.watch<DashboardViewModel>().settings || context.watch<DashboardViewModel>().timelinePage
+                 || context.watch<PaymentViewModel>().showSendMoneyView || context.watch<PaymentViewModel>().showReceiveMoneyView
                     ? 0
                     : 1,
                 child: Theme(

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
 import '../dashboard/dashboard_view_model.dart';
+import '../payment/payment_view_model.dart';
 
 
 enum BottomBarIndex {
@@ -14,12 +15,18 @@ class LayoutViewModel extends ChangeNotifier {
 
   BottomBarIndex bottomBarIndex = BottomBarIndex.home;
   changeBottomBarIndex(BottomBarIndex value, BuildContext context) {
+    if(value == bottomBarIndex) return;
+
     bottomBarIndex = value;
 
-    ///Dispose
+    ///Disposing dashboard screen resources
     if(value != BottomBarIndex.home) {
-      if(value == bottomBarIndex) return;
       context.read<DashboardViewModel>().disposeControllers();
+    }
+
+    ///Disposing payment screen resources
+    if(value != BottomBarIndex.payment) {
+      context.read<PaymentViewModel>().disposeResources();
     }
     notifyListeners();
   }

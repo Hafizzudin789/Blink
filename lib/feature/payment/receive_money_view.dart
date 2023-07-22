@@ -3,6 +3,7 @@ import 'package:blink/constant/app_color.dart';
 import 'package:blink/widgets/custom_svg_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../constant/constants.dart';
 import '../../utils/format_string_amout.dart';
 import 'receive_money_view_model.dart';
 
@@ -20,48 +21,47 @@ class _ReceiveMoneyViewState extends State<ReceiveMoneyView> {
       create: (_) => ReceiveMoneyViewModel(),
       builder: (context, child) {
         return Scaffold(
-          body: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const CircleAvatar(
-                    backgroundImage: AssetImage("assets/dummy/person.jpg"),
-                    radius: 28,
+          body: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            margin: EdgeInsets.only(top: (MediaQuery.of(context).size.height * 0.3)-bottomBarHeight),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const CircleAvatar(
+                  backgroundImage: AssetImage("assets/dummy/person.jpg"),
+                  radius: 28,
+                ),
+                const Text("Receive money from", style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w400),),
+                const Text("Rose", style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600),),
+
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  decoration: BoxDecoration(
+                      border: Border.all(color: gray200Color),
+                      borderRadius: BorderRadius.circular(15)
                   ),
-                  const Text("Receive money from", style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w400),),
-                  const Text("Rose", style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600),),
-
-                  Container(
-                    margin: const EdgeInsets.symmetric(vertical: 16),
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                    decoration: BoxDecoration(
-                        border: Border.all(color: gray200Color),
-                        borderRadius: BorderRadius.circular(15)
-                    ),
-                    child: const Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Transaction Purpose", style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: gray400Color),),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(child: Text("Personal\nTransfer to Friend or Family", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.black),)),
-                            Text("Edit", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: primaryButtonColor),)
-                          ],
-                        ),
-                      ],
-                    ),
+                  child: const Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("Transaction Purpose", style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: gray400Color),),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(child: Text("Personal\nTransfer to Friend or Family", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.black),)),
+                          Text("Edit", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: primaryButtonColor),)
+                        ],
+                      ),
+                    ],
                   ),
+                ),
 
-                  _amountTextField(context),
+                _amountTextField(context),
 
-                  _actualBalance(),
+                _actualBalance(),
 
-                  _keyPad(context.read<ReceiveMoneyViewModel>()),
-                ],
-              ),
+                _keyPad(context.read<ReceiveMoneyViewModel>()),
+              ],
             ),
           ),
         );
@@ -80,7 +80,8 @@ class _ReceiveMoneyViewState extends State<ReceiveMoneyView> {
             Expanded(
               child: AutoSizeText.rich(
                 TextSpan(
-                    text: formatStringToAmount(context.watch<ReceiveMoneyViewModel>().actualAmount),
+                    //text: formatStringToAmount(context.watch<ReceiveMoneyViewModel>().actualAmount),
+                    text: context.watch<ReceiveMoneyViewModel>().actualAmount,
                     children: const [
                       TextSpan(
                         text: " JOD",
@@ -95,10 +96,12 @@ class _ReceiveMoneyViewState extends State<ReceiveMoneyView> {
               ),
             ),
             InkWell(
-                onTap: () {
-                  context.read<ReceiveMoneyViewModel>().removeAmount();
-                },
-                child: const SVGImage(assetPath: "assets/icons/closeBack.svg", width: 20)),
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              onTap: () {
+                context.read<ReceiveMoneyViewModel>().removeAmount();
+              },
+              child: const SVGImage(assetPath: "assets/icons/closeBack.svg", width: 20)),
           ],
         ),
       ),
@@ -134,7 +137,7 @@ class _ReceiveMoneyViewState extends State<ReceiveMoneyView> {
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         crossAxisCount: 3,
-        childAspectRatio: 1.3,
+        childAspectRatio: 1.5,
         children: [
           _number(1, viewModel),
           _number(2, viewModel),
@@ -145,7 +148,7 @@ class _ReceiveMoneyViewState extends State<ReceiveMoneyView> {
           _number(7, viewModel),
           _number(8, viewModel),
           _number(9, viewModel),
-          _dot("."),
+          _dot(".", viewModel),
           _number(0,viewModel),
           InkWell(
             splashColor: Colors.transparent,
@@ -177,11 +180,13 @@ class _ReceiveMoneyViewState extends State<ReceiveMoneyView> {
     );
   }
 
-  Widget _dot(String value) {
+  Widget _dot(String value, ReceiveMoneyViewModel viewModel) {
     return InkWell(
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,
-      onTap: () {},
+      onTap: () {
+        viewModel.editAmount(value);
+      },
       child: Center(child: Text(value, style: const TextStyle(color: Colors.black, fontSize: 28, fontWeight: FontWeight.w500),)),
     );
   }

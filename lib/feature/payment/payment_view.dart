@@ -1,11 +1,13 @@
+import 'package:blink/feature/dashboard/dashboard_view_model.dart';
+import 'package:blink/feature/payment/payment_view_model.dart';
+import 'package:blink/feature/payment/receive_money_view.dart';
+import 'package:blink/feature/payment/send_money_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:math' as math;
 import '../../constant/app_color.dart';
 import '../../constant/constants.dart';
 import '../../widgets/custom_svg_image.dart';
-import '../dashboard/dashboard_view_model.dart';
-import '../layout/layout_view_model.dart';
 import 'widget/request_money_from_card.dart';
 import 'widget/sent_money_to_card.dart';
 
@@ -17,7 +19,7 @@ class PaymentView extends StatefulWidget {
   State<PaymentView> createState() => _PaymentViewState();
 }
 
-class _PaymentViewState extends State<PaymentView> {
+class _PaymentViewState extends State<PaymentView> with TickerProviderStateMixin{
 
   int pageViewIndex = 0;
   late PageController pageController;
@@ -30,51 +32,109 @@ class _PaymentViewState extends State<PaymentView> {
   void initState() {
     super.initState();
     pageController = PageController(initialPage: pageViewIndex, viewportFraction: 0.8);
+
+
+    context.read<PaymentViewModel>().translateUpController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+
+    context.read<PaymentViewModel>().translateUpAnimation = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(
+      CurvedAnimation(parent: context.read<PaymentViewModel>().translateUpController,
+        curve: Curves.easeInOut,
+        reverseCurve: Curves.easeInOut,
+      ),
+    );
+
+
+    context.read<PaymentViewModel>().scaleController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+      lowerBound: 1,
+      upperBound: 2,
+    );
+
+
+
+    context.read<PaymentViewModel>().translateSidewaysController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
   }
+
+  // @override
+  // void dispose() {
+  //   super.dispose();
+  //   context.read<PaymentViewModel>().disposeResources();
+  // }
 
   @override
   Widget build(BuildContext context) {
+    PaymentViewModel readPaymentViewModel = context.read<PaymentViewModel>();
+    PaymentViewModel watchPaymentViewModel = context.watch<PaymentViewModel>();
     return Scaffold(
-      body: AnimatedBuilder(
-        animation: context.read<DashboardViewModel>().translateSettingsUpController,
-        child: SafeArea(
-          child: Container(
-            margin: EdgeInsets.only(bottom: bottomBarHeight),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                AnimatedOpacity(
-                  duration: const Duration(milliseconds: 500),
-                  opacity: context.read<DashboardViewModel>().timelinePage ? 0: 1,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(height: MediaQuery.of(context).size.height * 0.04),
-                      const SVGImage(assetPath: "assets/icons/payment.svg"),
-                      const Text("Payments", style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600),),
-                    ],
-                  ),
-                ),
-                _pageViewWidget(),
-                _pageViewIndicator(),
-              ],
-            ),
+      body: Stack(
+        fit: StackFit.expand,
+        clipBehavior: Clip.hardEdge,
+        children: [
+          ///SendMoneyView page
+          ///ReceiveMoneyView page
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 500),
+            reverseDuration: const Duration(milliseconds: 400),
+            switchInCurve: Curves.easeInOut,
+            switchOutCurve: Curves.linearToEaseOut,
+            child: watchPaymentViewModel.showSendMoneyView
+                ? const SendMoneyView()
+                : watchPaymentViewModel.showReceiveMoneyView
+                ? const ReceiveMoneyView()
+                : const SizedBox(),
           ),
-        ),
-        builder: (context, child) {
-          return Transform.translate(
-            offset: Offset(0, context.read<DashboardViewModel>().animation.value* (-MediaQuery.of(context).size.height*0.65)),
-            child: Transform.scale(
-              scale: context.read<DashboardViewModel>().scaleAnimationController.value,
-              child: child,
+          AnimatedBuilder(
+            animation: readPaymentViewModel.translateUpController,
+            child: SafeArea(
+              child: Container(
+                color: readPaymentViewModel.showSendMoneyView || readPaymentViewModel.showReceiveMoneyView
+                    ? Colors.white
+                    : Colors.transparent,
+                margin: EdgeInsets.only(bottom: bottomBarHeight),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    AnimatedOpacity(
+                      duration: const Duration(milliseconds: 500),
+                      opacity: watchPaymentViewModel.showSendMoneyView || watchPaymentViewModel.showReceiveMoneyView ? 0: 1,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+                          const SVGImage(assetPath: "assets/icons/payment.svg"),
+                          const Text("Payments", style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600),),
+                        ],
+                      ),
+                    ),
+                    _pageViewWidget(watchPaymentViewModel, readPaymentViewModel),
+                    _pageViewIndicator(watchPaymentViewModel),
+                  ],
+                ),
+              ),
             ),
-          );
-        },
+            builder: (context, child) {
+              return Transform.translate(
+                offset: Offset(0, readPaymentViewModel.translateUpAnimation.value * (-MediaQuery.of(context).size.height*0.7)),
+                child: child,
+              );
+            },
+          ),
+        ],
       ),
     );
   }
 
-  _pageViewWidget() {
+  _pageViewWidget(PaymentViewModel watchPaymentViewModel, PaymentViewModel readPaymentViewModel) {
     return Expanded(
       child: Stack(
         alignment: Alignment.topCenter,
@@ -82,8 +142,8 @@ class _PaymentViewState extends State<PaymentView> {
           PageView.builder(
             itemCount: 2,
             controller: pageController,
-            ///If settings page or timeline page is active do not scroll horizontal (swipe)
-            physics: context.watch<DashboardViewModel>().settings || context.watch<DashboardViewModel>().timelinePage
+            ///If SendMoneyView page or ReceiveMoneyView page is active do not scroll horizontal (swipe)
+            physics: watchPaymentViewModel.showSendMoneyView || watchPaymentViewModel.showReceiveMoneyView
                 ? const NeverScrollableScrollPhysics()
                 : const ClampingScrollPhysics(),
             onPageChanged: (int value) {
@@ -92,130 +152,109 @@ class _PaymentViewState extends State<PaymentView> {
               });
             },
             itemBuilder: (context, index) {
-              return Padding(
-                padding: EdgeInsets.only(bottom: context.read<DashboardViewModel>().timelinePage?bottomBarHeight:0),
+              return AnimatedBuilder(
+                animation: readPaymentViewModel.translateSidewaysController,
+                ///Tilted semicircle
+                builder: (context, child) {
+                  ///Side ways translation timeline animation
+                  return Transform.translate(
+                    offset: pageViewIndex == index
+                        ? const Offset(0, 0)
+                        : pageViewIndex < index
+                        ? Offset(readPaymentViewModel.translateSidewaysController.value*100, 0)
+                        : Offset(-readPaymentViewModel.translateSidewaysController.value*100, 0) ,
+                    child: child,
+                  );
+                },
                 child: AnimatedBuilder(
-                  animation: context.read<DashboardViewModel>().translateSidewaysController,
-                  ///Tilted semicircle
+                  animation: pageController,
+                  child: _paymentCard(index, readPaymentViewModel),
                   builder: (context, child) {
-                    ///Side ways translation timeline animation
-                    return Transform.translate(
-                      offset: pageViewIndex == index
-                          ? const Offset(0, 0)
-                          : pageViewIndex < index
-                          ? Offset(context.read<DashboardViewModel>().translateSidewaysController.value*100, 0)
-                          : Offset(-context.read<DashboardViewModel>().translateSidewaysController.value*100, 0) ,
-                      child: child,
+                    double value = 0;
+                    ///Checking if pageController is ready to use
+                    if(pageController.position.hasContentDimensions) {
+                      ///For current page value = 0, so rotation and translation value is zero
+                      value = index.toDouble() - (pageController.page??0);
+                      value = (value * 0.012);
+                    }
+                    ///Tilted semicircle
+                    return Transform.rotate(
+                      angle: (math.pi * value),
+                      child: Transform.translate(
+                        offset: Offset(0, value.abs() * 500),
+                        child: AnimatedOpacity(
+                          opacity: index == pageViewIndex
+                              ? 1
+                              : 0.5,
+                          duration: const Duration(milliseconds: 400),
+                          child: child!,
+                        ),
+                      ),
                     );
                   },
-                  child: AnimatedBuilder(
-                    animation: pageController,
-                    child: _paymentCard(index),
-                    builder: (context, child) {
-                      double value = 0;
-                      ///Checking if pageController is ready to use
-                      if(pageController.position.hasContentDimensions) {
-                        ///For current page value = 0, so rotation and translation value is zero
-                        value = index.toDouble() - (pageController.page??0);
-                        value = (value * 0.012);
-                      }
-                      ///Tilted semicircle
-                      return Transform.rotate(
-                        angle: (math.pi * value),
-                        child: Transform.translate(
-                          offset: Offset(0, value.abs() * 500),
-                          child: AnimatedOpacity(
-                            opacity: index == pageViewIndex
-                                ? 1
-                                : 0.5,
-                            duration: const Duration(milliseconds: 400),
-                            child: child!,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
                 ),
               );
             },
           ),
 
-          ///Transactions button
-          ///For My Account and My credit card
+          ///New payment button
           Positioned(
             bottom: 20,
             child: InkWell(
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,
               onTap: () {
-                // if(myCreditCard) {
-                //   if(context.read<DashboardViewModel>().settings) {
-                //     context.read<DashboardViewModel>().showSettingPage(false);
-                //     return;
-                //   }
-                //
-                //   if(context.read<LayoutViewModel>().showButtonsInCreditCard) {
-                //     context.read<DashboardViewModel>().goToTransactionPage(context);
-                //   }
-                // }
-                // if(myAccount) {
-                //   ///TODO:
-                // }
+                if(readPaymentViewModel.showSendMoneyView) {
+                  readPaymentViewModel.goToSendMoneyView(false, context.read<DashboardViewModel>());
+                } else {
+                  readPaymentViewModel.goToReceiveMoneyView(false, context.read<DashboardViewModel>());
+                }
               },
-              child: AnimatedOpacity(
-                ///For credit card
-                duration: const Duration(milliseconds: 500),
-                opacity: !context.watch<LayoutViewModel>().showButtonsInCreditCard //&& myCreditCard
-                    ? 0
-                    : 1,
-                child: AnimatedBuilder(
-                  animation: pageController,
-                  builder: (BuildContext context, Widget? child) {
-                    double translateYOffset = 0;
-                    double opacity = 0;
-                    if(pageController.position.hasContentDimensions) {
-                      opacity = pageViewIndex - (pageController.page??0);
-                      translateYOffset = pageViewIndex - (pageController.page??0);
-                    }
-                    return Transform.translate(
-                      offset: Offset(0, translateYOffset.abs() * 40),
-                      child: Opacity(
-                        opacity: (opacity.abs() -1).abs(),
-                        child: child!,
-                      ),
-                    );
-                  },
-                  ///For credit card
-                  child: AnimatedContainer(
+              child: AnimatedBuilder(
+                animation: pageController,
+                builder: (BuildContext context, Widget? child) {
+                  double translateYOffset = 0;
+                  double opacity = 0;
+                  if(pageController.position.hasContentDimensions) {
+                    opacity = pageViewIndex - (pageController.page??0);
+                    translateYOffset = pageViewIndex - (pageController.page??0);
+                  }
+                  return Transform.translate(
+                    offset: Offset(0, translateYOffset.abs() * 40),
+                    child: Opacity(
+                      opacity: (opacity.abs() -1).abs(),
+                      child: child!,
+                    ),
+                  );
+                },
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 500),
+                  curve: Curves.easeInOut,
+                  width: watchPaymentViewModel.showSendMoneyView || watchPaymentViewModel.showReceiveMoneyView
+                      ? 48
+                      : 150,
+                  height: watchPaymentViewModel.showSendMoneyView || watchPaymentViewModel.showReceiveMoneyView
+                      ? 48
+                      : 44,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(color: gray200Color, width: 1),
+                    borderRadius: BorderRadius.circular(100),
+                    boxShadow: const [
+                      BoxShadow(color: gray200Color, blurRadius: 5, spreadRadius: 0.1, offset: Offset(0,4))
+                    ],
+                  ),
+                  child: AnimatedCrossFade(
                     duration: const Duration(milliseconds: 500),
-                    curve: Curves.easeInOut,
-                    width: context.watch<DashboardViewModel>().settings
-                        ? 48
-                        : 150,
-                    height: context.watch<DashboardViewModel>().settings
-                        ? 48
-                        : 44,
+                    reverseDuration: const Duration(milliseconds: 500),
+                    firstCurve: Curves.easeIn,
+                    secondCurve: Curves.easeIn,
                     alignment: Alignment.center,
-
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(color: gray200Color, width: 1),
-                      borderRadius: BorderRadius.circular(100),
-                      boxShadow: const [
-                        BoxShadow(color: gray200Color, blurRadius: 5, spreadRadius: 0.1, offset: Offset(0,4))
-                      ],
-                    ),
-                    child: AnimatedCrossFade(
-                      duration: const Duration(milliseconds: 500),
-                      reverseDuration: const Duration(milliseconds: 500),
-                      firstCurve: Curves.easeIn,
-                      secondCurve: Curves.easeIn,
-                      alignment: Alignment.center,
-                      crossFadeState: context.watch<DashboardViewModel>().settings
-                          ? CrossFadeState.showFirst:CrossFadeState.showSecond,
-                      firstChild: const SVGImage(assetPath: "assets/icons/down.svg"),
-                      secondChild: const Text("New Payment", style: TextStyle(color: primaryButtonColor, fontSize: 12, fontWeight: FontWeight.w600),),
-                    ),
+                    crossFadeState: watchPaymentViewModel.showSendMoneyView || watchPaymentViewModel.showReceiveMoneyView
+                        ? CrossFadeState.showFirst:CrossFadeState.showSecond,
+                    firstChild: const SVGImage(assetPath: "assets/icons/down.svg"),
+                    secondChild: const Text("New Payment", style: TextStyle(color: primaryButtonColor, fontSize: 12, fontWeight: FontWeight.w600),),
                   ),
                 ),
               ),
@@ -226,13 +265,13 @@ class _PaymentViewState extends State<PaymentView> {
     );
   }
 
-  _paymentCard(int index) {
+  _paymentCard(int index, PaymentViewModel readPaymentViewModel) {
     return index == 0
-        ? const SendMoneyToCard()
-        : const RequestMoneyFromCard();
+        ? SendMoneyToCard(readPaymentViewModel: readPaymentViewModel)
+        : RequestMoneyFromCard(readPaymentViewModel: readPaymentViewModel);
   }
 
-  _pageViewIndicator() {
+  _pageViewIndicator(PaymentViewModel watchPaymentViewModel) {
     ///Hide indicator when settings page is active
     return AnimatedCrossFade(
       firstChild: const SizedBox(),
@@ -261,7 +300,7 @@ class _PaymentViewState extends State<PaymentView> {
           ],
         ),
       ),
-      crossFadeState: context.watch<DashboardViewModel>().settings || context.watch<DashboardViewModel>().timelinePage
+      crossFadeState: watchPaymentViewModel.showSendMoneyView || watchPaymentViewModel.showReceiveMoneyView
           ? CrossFadeState.showFirst
           : CrossFadeState.showSecond,
       duration: const Duration(milliseconds: 500),

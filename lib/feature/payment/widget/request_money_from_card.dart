@@ -1,14 +1,18 @@
+import 'package:blink/feature/payment/payment_view_model.dart';
 import 'package:blink/feature/payment/receive_money_view.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../constant/app_color.dart';
 import '../../../data.dart';
 import '../../../widgets/custom_icon_button.dart';
 import '../../../widgets/custom_svg_image.dart';
 import '../../../widgets/elevated_button.dart';
+import '../../dashboard/dashboard_view_model.dart';
 
 class RequestMoneyFromCard extends StatelessWidget {
-  const RequestMoneyFromCard({super.key});
+  final PaymentViewModel readPaymentViewModel;
+  const RequestMoneyFromCard({super.key, required this.readPaymentViewModel});
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +56,8 @@ class RequestMoneyFromCard extends StatelessWidget {
               children: [
                 ...users.map((e) => InkWell(
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>const ReceiveMoneyView()));
+                    readPaymentViewModel.goToReceiveMoneyView(true, context.read<DashboardViewModel>());
+                    //Navigator.push(context, MaterialPageRoute(builder: (context)=>const ReceiveMoneyView()));
                   },
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,

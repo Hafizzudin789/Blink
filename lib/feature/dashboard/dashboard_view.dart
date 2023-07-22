@@ -85,9 +85,6 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
   void dispose() {
     super.dispose();
     pageController.dispose();
-    if(!mounted) {
-      context.read<DashboardViewModel>().disposeControllers();
-    }
   }
 
 
