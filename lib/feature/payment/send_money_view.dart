@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:blink/constant/app_color.dart';
+import 'package:blink/feature/payment/payment_view_model.dart';
 import 'package:blink/feature/payment/send_money_view_model.dart';
 import 'package:blink/widgets/custom_svg_image.dart';
 import 'package:flutter/material.dart';
@@ -28,34 +29,40 @@ class _SendMoneyViewState extends State<SendMoneyView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const CircleAvatar(
-                  backgroundImage: AssetImage("assets/dummy/person.jpg"),
-                  radius: 28,
-                ),
-                const Text("Send money to", style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w400),),
-                const Text("Rose", style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600),),
+                context.watch<PaymentViewModel>().sendTo !=null
+                    ? CircleAvatar(
+                        backgroundImage: AssetImage(context.watch<PaymentViewModel>().sendTo!.image),
+                        radius: 28,
+                      )
+                    : const SizedBox(height: 56),
+                Text(context.watch<PaymentViewModel>().sendTo !=null?"Send money to":"Send money", style: const TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w400),),
+                context.watch<PaymentViewModel>().sendTo != null
+                    ? Text(context.watch<PaymentViewModel>().sendTo!.name, style: const TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600),)
+                    : const SizedBox(),
 
-                Container(
-                  margin: const EdgeInsets.symmetric(vertical: 16),
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                  decoration: BoxDecoration(
-                      border: Border.all(color: gray200Color),
-                      borderRadius: BorderRadius.circular(15)
-                  ),
-                  child: const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("Transaction Purpose", style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: gray400Color),),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(child: Text("Personal\nTransfer to Friend or Family", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.black),)),
-                          Text("Edit", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: primaryButtonColor),)
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
+                context.watch<PaymentViewModel>().sendTo !=null
+                    ? Container(
+                        margin: const EdgeInsets.symmetric(vertical: 16),
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                        decoration: BoxDecoration(
+                            border: Border.all(color: gray200Color),
+                            borderRadius: BorderRadius.circular(15)
+                        ),
+                        child: const Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("Transaction Purpose", style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: gray400Color),),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(child: Text("Personal\nTransfer to Friend or Family", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.black),)),
+                                Text("Edit", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: primaryButtonColor),)
+                              ],
+                            ),
+                          ],
+                        ),
+                      )
+                    : const SizedBox(height: 80),
 
                 _amountTextField(context),
 

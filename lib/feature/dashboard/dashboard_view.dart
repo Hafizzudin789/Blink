@@ -170,7 +170,7 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
 
               ///Flip card bug fix
               if(value == 0 && !context.read<LayoutViewModel>().showButtonsInDebitCard) {
-                context.read<LayoutViewModel>().showButtons();
+                context.read<LayoutViewModel>().showButtonsDebitCard();
               }
 
               setState(() {

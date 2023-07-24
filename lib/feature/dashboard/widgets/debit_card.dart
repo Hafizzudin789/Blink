@@ -309,7 +309,7 @@ class _DebitCardState extends State<DebitCard> with SingleTickerProviderStateMix
         //   //context.read<LayoutViewModel>().showButtonsInDebitCard = !context.read<LayoutViewModel>().showButtonsInDebitCard;
         //   context.read<LayoutViewModel>().showButtons();
         // });
-        context.read<LayoutViewModel>().showButtons();
+        context.read<LayoutViewModel>().showButtonsDebitCard();
       } else {
         _animationController.reverse();
         Future.delayed(const Duration(milliseconds: 500),
@@ -318,7 +318,7 @@ class _DebitCardState extends State<DebitCard> with SingleTickerProviderStateMix
             //   //context.read<LayoutViewModel>().showButtonsInDebitCard = !context.read<LayoutViewModel>().showButtonsInDebitCard;
             //   context.read<LayoutViewModel>().showButtons();
             // });
-            context.read<LayoutViewModel>().showButtons();
+            context.read<LayoutViewModel>().showButtonsDebitCard();
           },
         );
       }

@@ -25,8 +25,10 @@ class _PaymentViewState extends State<PaymentView> with TickerProviderStateMixin
   late PageController pageController;
 
   final List _paymentCardCount = [1,2]; ///Number of cards to horizontally scroll
-  
 
+
+  late AnimationController _zoomController;
+  late Animation<double> _zoomAnimation;
 
   @override
   void initState() {
@@ -63,73 +65,91 @@ class _PaymentViewState extends State<PaymentView> with TickerProviderStateMixin
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
+
+
+    _zoomController = AnimationController(vsync: this, duration: const Duration(milliseconds: 250));
+    _zoomAnimation = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(_zoomController);
+    _zoomController.forward();
   }
 
-  // @override
-  // void dispose() {
-  //   super.dispose();
-  //   context.read<PaymentViewModel>().disposeResources();
-  // }
+  @override
+  void dispose() {
+    _zoomController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     PaymentViewModel readPaymentViewModel = context.read<PaymentViewModel>();
     PaymentViewModel watchPaymentViewModel = context.watch<PaymentViewModel>();
     return Scaffold(
-      body: Stack(
-        fit: StackFit.expand,
-        clipBehavior: Clip.hardEdge,
-        children: [
-          ///SendMoneyView page
-          ///ReceiveMoneyView page
-          AnimatedSwitcher(
-            duration: const Duration(milliseconds: 500),
-            reverseDuration: const Duration(milliseconds: 400),
-            switchInCurve: Curves.easeInOut,
-            switchOutCurve: Curves.linearToEaseOut,
-            child: watchPaymentViewModel.showSendMoneyView
-                ? const SendMoneyView()
-                : watchPaymentViewModel.showReceiveMoneyView
-                ? const ReceiveMoneyView()
-                : const SizedBox(),
-          ),
-          AnimatedBuilder(
-            animation: readPaymentViewModel.translateUpController,
-            child: SafeArea(
-              child: Container(
-                color: readPaymentViewModel.showSendMoneyView || readPaymentViewModel.showReceiveMoneyView
-                    ? Colors.white
-                    : Colors.transparent,
-                margin: EdgeInsets.only(bottom: bottomBarHeight),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    AnimatedOpacity(
-                      duration: const Duration(milliseconds: 500),
-                      opacity: watchPaymentViewModel.showSendMoneyView || watchPaymentViewModel.showReceiveMoneyView ? 0: 1,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          SizedBox(height: MediaQuery.of(context).size.height * 0.04),
-                          const SVGImage(assetPath: "assets/icons/payment.svg"),
-                          const Text("Payments", style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600),),
-                        ],
-                      ),
-                    ),
-                    _pageViewWidget(watchPaymentViewModel, readPaymentViewModel),
-                    _pageViewIndicator(watchPaymentViewModel),
-                  ],
-                ),
+      body: FadeTransition(
+        opacity: _zoomAnimation,
+        child: AnimatedBuilder(
+          animation: _zoomController,
+          builder: (context, child) {
+            return Transform.scale(
+              scale: _zoomController.value,
+              child: child!,
+            );
+          },
+          child: Stack(
+            children: [
+              ///SendMoneyView page
+              ///ReceiveMoneyView page
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 500),
+                reverseDuration: const Duration(milliseconds: 400),
+                switchInCurve: Curves.easeInOut,
+                switchOutCurve: Curves.linearToEaseOut,
+                child: watchPaymentViewModel.showSendMoneyView
+                    ? const SendMoneyView()
+                    : watchPaymentViewModel.showReceiveMoneyView
+                    ? const ReceiveMoneyView()
+                    : const SizedBox(),
               ),
-            ),
-            builder: (context, child) {
-              return Transform.translate(
-                offset: Offset(0, readPaymentViewModel.translateUpAnimation.value * (-MediaQuery.of(context).size.height*0.7)),
-                child: child,
-              );
-            },
+              AnimatedBuilder(
+                animation: readPaymentViewModel.translateUpController,
+                child: SafeArea(
+                  child: Container(
+                    color: readPaymentViewModel.showSendMoneyView || readPaymentViewModel.showReceiveMoneyView
+                        ? Colors.white
+                        : Colors.transparent,
+                    margin: EdgeInsets.only(bottom: bottomBarHeight),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        AnimatedOpacity(
+                          duration: const Duration(milliseconds: 500),
+                          opacity: watchPaymentViewModel.showSendMoneyView || watchPaymentViewModel.showReceiveMoneyView ? 0: 1,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+                              const SVGImage(assetPath: "assets/icons/payment.svg"),
+                              const Text("Payments", style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600),),
+                            ],
+                          ),
+                        ),
+                        _pageViewWidget(watchPaymentViewModel, readPaymentViewModel),
+                        _pageViewIndicator(watchPaymentViewModel),
+                      ],
+                    ),
+                  ),
+                ),
+                builder: (context, child) {
+                  return Transform.translate(
+                    offset: Offset(0, readPaymentViewModel.translateUpAnimation.value * (-MediaQuery.of(context).size.height*0.7)),
+                    child: child,
+                  );
+                },
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -204,10 +224,10 @@ class _PaymentViewState extends State<PaymentView> with TickerProviderStateMixin
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,
               onTap: () {
-                if(readPaymentViewModel.showSendMoneyView) {
-                  readPaymentViewModel.goToSendMoneyView(false, context.read<DashboardViewModel>());
+                if(pageViewIndex == 0) {
+                  readPaymentViewModel.goToSendMoneyView(!readPaymentViewModel.showSendMoneyView, context.read<DashboardViewModel>());
                 } else {
-                  readPaymentViewModel.goToReceiveMoneyView(false, context.read<DashboardViewModel>());
+                  readPaymentViewModel.goToReceiveMoneyView(!readPaymentViewModel.showReceiveMoneyView, context.read<DashboardViewModel>());
                 }
               },
               child: AnimatedBuilder(

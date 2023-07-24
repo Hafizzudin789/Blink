@@ -68,7 +68,7 @@ class LayoutViewModel extends ChangeNotifier {
 
   ///Debit card logic
   bool showButtonsInDebitCard = true;
-  showButtons() {
+  showButtonsDebitCard() {
     showButtonsInDebitCard = !showButtonsInDebitCard;
     notifyListeners();
   }

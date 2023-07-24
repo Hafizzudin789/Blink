@@ -2,6 +2,7 @@ import 'package:blink/feature/dashboard/dashboard_view_model.dart';
 import 'package:flutter/material.dart';
 
 import '../../constant/constants.dart';
+import '../../data.dart';
 
 class PaymentViewModel extends ChangeNotifier {
 
@@ -23,7 +24,9 @@ class PaymentViewModel extends ChangeNotifier {
 
   bool _showSendMoneyView = false;
   bool get showSendMoneyView => _showSendMoneyView;
-  goToSendMoneyView(bool value, DashboardViewModel dashboardViewModel) {
+  User? sendTo;
+  ///When New payment user param is null
+  goToSendMoneyView(bool value, DashboardViewModel dashboardViewModel, {User? user}) {
     if(value) {
       Future.delayed(const Duration(milliseconds: 300), () {
         dashboardViewModel.changeBottomNavbarHeight(0);
@@ -34,6 +37,7 @@ class PaymentViewModel extends ChangeNotifier {
       dashboardViewModel.changeBottomNavbarHeight(bottomBarHeight);
       animateReverse();
     }
+    sendTo = user;
     _showSendMoneyView = value;
     notifyListeners();
   }
@@ -42,7 +46,9 @@ class PaymentViewModel extends ChangeNotifier {
 
   bool _showReceiveMoneyView = false;
   bool get showReceiveMoneyView => _showReceiveMoneyView;
-  goToReceiveMoneyView(bool value, DashboardViewModel dashboardViewModel) {
+  User? receiveFrom;
+  ///When New payment user param is null
+  goToReceiveMoneyView(bool value, DashboardViewModel dashboardViewModel, {User? user}) {
     if(value) {
       Future.delayed(const Duration(milliseconds: 300), () {
         dashboardViewModel.changeBottomNavbarHeight(0);
@@ -53,6 +59,7 @@ class PaymentViewModel extends ChangeNotifier {
       dashboardViewModel.changeBottomNavbarHeight(bottomBarHeight);
       animateReverse();
     }
+    receiveFrom = user;
     _showReceiveMoneyView = value;
     notifyListeners();
   }

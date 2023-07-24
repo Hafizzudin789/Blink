@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import '../../constant/constants.dart';
-import '../navigation_transitions.dart';
+import '../../utils/navigation_transitions.dart';
 import '../transaction_view.dart';
 
 

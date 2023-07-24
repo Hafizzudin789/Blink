@@ -60,7 +60,10 @@ class _LayoutViewState extends State<LayoutView> with SingleTickerProviderStateM
                           ? Colors.black26
                           : Colors.white,
                       onTap: (int value) {
-                        onTap(value, context.read<LayoutViewModel>());
+                        ///Deactivate bottom nav bar when menu is open
+                        if(!context.read<LayoutViewModel>().showMainMenu || value == 1) {
+                          onTap(value, context.read<LayoutViewModel>());
+                        }
                       },
                       type: BottomNavigationBarType.fixed,
                       items: [
