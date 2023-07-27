@@ -75,6 +75,22 @@ class DashboardViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool showPayBackView = false;
+  goToPayBackView(bool value) {
+    if(value) {
+      Future.delayed(const Duration(milliseconds: 300), () {
+        changeBottomNavbarHeight(0);
+      },);
+      animateForwardSettingsPage();
+    } else {
+      changeBottomNavbarHeight(bottomBarHeight);
+      animateReverseSettingsPage();
+    }
+
+    showPayBackView = value;
+    notifyListeners();
+  }
+
 
 
 

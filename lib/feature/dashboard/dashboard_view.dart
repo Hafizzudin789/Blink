@@ -8,6 +8,7 @@ import 'dart:math' as math;
 import '../../constant/constants.dart';
 import '../../widgets/custom_svg_image.dart';
 import '../layout/layout_view_model.dart';
+import '../pay_back_view.dart';
 import '../settings_view.dart';
 import 'widgets/debit_card.dart';
 import 'widgets/my_account_card.dart';
@@ -105,7 +106,9 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
                 ? const SettingsView(key: Key("Setting"))
                 : context.read<DashboardViewModel>().timelinePage
                   ? const TimelineView(key: Key("Timeline"))
-                  : const SizedBox(),
+                  : context.read<DashboardViewModel>().showPayBackView
+                      ? const PayBackView()
+                      : const SizedBox(),
           ),
           AnimatedBuilder(
             animation: context.read<DashboardViewModel>().translateTimelineDownController,
@@ -133,7 +136,9 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
               ),
               builder: (context, child) {
                 return Transform.translate(
-                  offset: Offset(0, context.read<DashboardViewModel>().animation.value* (-MediaQuery.of(context).size.height*0.65)),
+                  //TODO
+                  //offset: Offset(0, context.read<DashboardViewModel>().animation.value* (-MediaQuery.of(context).size.height*0.65)),
+                  offset: Offset(0, context.read<DashboardViewModel>().animation.value* (-MediaQuery.of(context).size.height*0.7)),
                   child: Transform.scale(
                     scale: context.read<DashboardViewModel>().scaleAnimationController.value,
                     child: child,
@@ -293,7 +298,6 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
           ///For My Account and My credit card
           Positioned(
             bottom: 20,
-            // child: Container(color: Colors.red,child: Text("Hello Brother")),
             child: myDebitCard
                 ///No transaction button for debit card
                 ? const SizedBox()
@@ -307,9 +311,17 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
                           return;
                         }
 
+                        if(context.read<DashboardViewModel>().showPayBackView) {
+                          context.read<DashboardViewModel>().goToPayBackView(false);
+                          return;
+                        }
+
                         if(context.read<LayoutViewModel>().showButtonsInCreditCard) {
                           context.read<DashboardViewModel>().goToTransactionPage(context);
+                          return;
                         }
+
+
                       }
                       if(myAccount) {
                         ///TODO:
@@ -342,10 +354,10 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
                           child: AnimatedContainer(
                               duration: const Duration(milliseconds: 500),
                               curve: Curves.easeInOut,
-                              width: context.watch<DashboardViewModel>().settings
+                              width: context.watch<DashboardViewModel>().settings || context.watch<DashboardViewModel>().showPayBackView
                                   ? 48
                                   : 150,
-                              height: context.watch<DashboardViewModel>().settings
+                              height: context.watch<DashboardViewModel>().settings || context.watch<DashboardViewModel>().showPayBackView
                                   ? 48
                                   : 44,
                               alignment: Alignment.center,
@@ -364,7 +376,7 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
                                 firstCurve: Curves.easeIn,
                                 secondCurve: Curves.easeIn,
                                 alignment: Alignment.center,
-                                crossFadeState: context.watch<DashboardViewModel>().settings
+                                crossFadeState: context.watch<DashboardViewModel>().settings || context.read<DashboardViewModel>().showPayBackView
                                     ? CrossFadeState.showFirst:CrossFadeState.showSecond,
                                 firstChild: const SVGImage(assetPath: "assets/icons/down.svg"),
                                 secondChild: const Text("Transactions", style: TextStyle(color: primaryButtonColor, fontSize: 12, fontWeight: FontWeight.w600),),
@@ -389,8 +401,11 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
   }
 
   _pageViewIndicator() {
-    ///Hide indicator when settings page is active
+    ///Hide indicator when settings, timeline, payback page is active
     return AnimatedCrossFade(
+      crossFadeState: context.watch<DashboardViewModel>().settings || context.watch<DashboardViewModel>().timelinePage || context.read<DashboardViewModel>().showPayBackView
+          ? CrossFadeState.showFirst
+          : CrossFadeState.showSecond,
       firstChild: const SizedBox(),
       secondChild: Padding(
         padding: const EdgeInsets.only(top: 8, bottom: 0),
@@ -417,9 +432,6 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
           ],
         ),
       ),
-      crossFadeState: context.watch<DashboardViewModel>().settings || context.watch<DashboardViewModel>().timelinePage
-          ? CrossFadeState.showFirst
-          : CrossFadeState.showSecond,
       duration: const Duration(milliseconds: 500),
     );
   }

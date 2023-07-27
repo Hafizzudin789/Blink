@@ -58,7 +58,7 @@ class _CreditCardState extends State<CreditCard> with SingleTickerProviderStateM
         ///Hide the card content when settings page is active
         child: AnimatedOpacity(
           duration: const Duration(milliseconds: 500),
-          opacity: context.watch<DashboardViewModel>().settings || context.watch<DashboardViewModel>().transactionPage
+          opacity: context.watch<DashboardViewModel>().settings || context.watch<DashboardViewModel>().transactionPage || context.read<DashboardViewModel>().showPayBackView
               ? 0:1,
           ///While rotating the card
           ///Change the content of the card
@@ -148,10 +148,10 @@ class _CreditCardState extends State<CreditCard> with SingleTickerProviderStateM
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      const Row(
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Column(
+                          const Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text.rich(
@@ -190,6 +190,9 @@ class _CreditCardState extends State<CreditCard> with SingleTickerProviderStateM
 
                           CustomButton(
                             label: "Pay back",
+                            onTap: () {
+                              context.read<DashboardViewModel>().goToPayBackView(true);
+                            },
                             buttonColor: primaryButtonColor,
                           ),
                         ],
