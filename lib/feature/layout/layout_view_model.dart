@@ -39,9 +39,12 @@ class LayoutViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool firstTime = true;
   onClickMainMenu(int index, BuildContext context) {
     switch(index) {
       case 0:
+        firstTime = false;
+        context.read<LayoutViewModel>().zoomController.reverse();
         openMainMenu();
         changeBottomBarIndex(BottomBarIndex.payment, context);
         break;
@@ -79,4 +82,8 @@ class LayoutViewModel extends ChangeNotifier {
     showButtonsInCreditCard = !showButtonsInCreditCard;
     notifyListeners();
   }
+
+
+  late AnimationController zoomController;
+  late Animation<double> zoomAnimation;
 }

@@ -69,7 +69,7 @@ class _PaymentViewState extends State<PaymentView> with TickerProviderStateMixin
 
     _zoomController = AnimationController(vsync: this, duration: const Duration(milliseconds: 250));
     _zoomAnimation = Tween<double>(
-      begin: 0,
+      begin: 0.5,
       end: 1,
     ).animate(_zoomController);
     _zoomController.forward();
@@ -92,7 +92,7 @@ class _PaymentViewState extends State<PaymentView> with TickerProviderStateMixin
           animation: _zoomController,
           builder: (context, child) {
             return Transform.scale(
-              scale: _zoomController.value,
+              scale: _zoomAnimation.value,
               child: child!,
             );
           },

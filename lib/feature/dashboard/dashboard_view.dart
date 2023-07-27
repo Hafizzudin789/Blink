@@ -40,6 +40,8 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
     return pageViewIndex == 2;
   }
 
+
+
   @override
   void initState() {
     super.initState();
@@ -80,6 +82,7 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
       duration: const Duration(milliseconds: 450),
       reverseDuration: const Duration(milliseconds: 400),
     );
+
   }
 
   @override
@@ -105,46 +108,45 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
             child: context.read<DashboardViewModel>().settings
                 ? const SettingsView(key: Key("Setting"))
                 : context.read<DashboardViewModel>().timelinePage
-                  ? const TimelineView(key: Key("Timeline"))
-                  : context.read<DashboardViewModel>().showPayBackView
-                      ? const PayBackView()
-                      : const SizedBox(),
+                ? const TimelineView(key: Key("Timeline"))
+                : context.read<DashboardViewModel>().showPayBackView
+                ? const PayBackView()
+                : const SizedBox(),
           ),
           AnimatedBuilder(
             animation: context.read<DashboardViewModel>().translateTimelineDownController,
             child: AnimatedBuilder(
-              animation: context.read<DashboardViewModel>().translateSettingsUpController,
-              child: SafeArea(
-                child: Container(
-                  color: context.read<DashboardViewModel>().settings
-                      ? Colors.white
-                      : Colors.transparent,
-                  margin: EdgeInsets.only(bottom: context.read<DashboardViewModel>().timelinePage?0:bottomBarHeight),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      AnimatedOpacity(
-                        duration: const Duration(milliseconds: 500),
-                        opacity: context.read<DashboardViewModel>().timelinePage ? 0: 1,
-                        child: totalBalance(),
-                      ),
-                      _pageViewWidget(),
-                      _pageViewIndicator(),
-                    ],
+                animation: context.read<DashboardViewModel>().translateSettingsUpController,
+                child: SafeArea(
+                  child: Container(
+                    color: context.read<DashboardViewModel>().settings
+                        ? Colors.white
+                        : Colors.transparent,
+                    margin: EdgeInsets.only(bottom: context.read<DashboardViewModel>().timelinePage?0:bottomBarHeight),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        AnimatedOpacity(
+                          duration: const Duration(milliseconds: 500),
+                          opacity: context.read<DashboardViewModel>().timelinePage ? 0: 1,
+                          child: totalBalance(),
+                        ),
+                        _pageViewWidget(),
+                        _pageViewIndicator(),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              builder: (context, child) {
-                return Transform.translate(
-                  //TODO
-                  //offset: Offset(0, context.read<DashboardViewModel>().animation.value* (-MediaQuery.of(context).size.height*0.65)),
-                  offset: Offset(0, context.read<DashboardViewModel>().animation.value* (-MediaQuery.of(context).size.height*0.7)),
-                  child: Transform.scale(
-                    scale: context.read<DashboardViewModel>().scaleAnimationController.value,
-                    child: child,
-                  ),
-                );
-              }
+                builder: (context, child) {
+                  return Transform.translate(
+                    //offset: Offset(0, context.read<DashboardViewModel>().animation.value* (-MediaQuery.of(context).size.height*0.65)),
+                    offset: Offset(0, context.read<DashboardViewModel>().animation.value* (-MediaQuery.of(context).size.height*0.7)),
+                    child: Transform.scale(
+                      scale: context.read<DashboardViewModel>().scaleAnimationController.value,
+                      child: child,
+                    ),
+                  );
+                }
             ),
             builder: (context, child) {
               ///Timeline animation

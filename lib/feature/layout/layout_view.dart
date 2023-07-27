@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../constant/app_color.dart';
 
+
 class LayoutView extends StatefulWidget {
   const LayoutView({super.key});
 
@@ -19,96 +20,119 @@ class LayoutView extends StatefulWidget {
 class _LayoutViewState extends State<LayoutView> with SingleTickerProviderStateMixin{
 
 
+
+  @override
+  void initState() {
+    super.initState();
+    ///This is while going back to dashboard from main menu modules
+    context.read<LayoutViewModel>().zoomController = AnimationController(vsync: this, duration: const Duration(milliseconds: 300));
+    context.read<LayoutViewModel>().zoomAnimation = Tween<double>(
+      begin: 1.5,
+      end: 1,
+    ).animate(context.read<LayoutViewModel>().zoomController);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<LayoutViewModel>(
-      create: (_) => LayoutViewModel(),
-      lazy: true,
-      builder: (context, child) {
-        return Scaffold(
-          body: Stack(
-            alignment: Alignment.bottomCenter,
-            children: [
-              ///Main View
-                context.watch<LayoutViewModel>().bottomBarIndex == BottomBarIndex.home
-                    ? const DashboardView()
-                    : context.watch<LayoutViewModel>().bottomBarIndex == BottomBarIndex.payment
-                        ? const PaymentView()
-                        : const DashboardView(),
+    return Scaffold(
+      body: Stack(
+        alignment: Alignment.bottomCenter,
+        children: [
+          ///Main View
+          context.watch<LayoutViewModel>().bottomBarIndex == BottomBarIndex.home
+              ? AnimatedBuilder(
+                  animation: context.read<LayoutViewModel>().zoomController,
+                  builder: (context, child) {
+                    return Transform.scale(
+                      scale: context.read<LayoutViewModel>().firstTime
+                          ? 1
+                          : context.read<LayoutViewModel>().zoomAnimation.value,
+                      child: child!,
+                    );
+                  },
+                  child: const DashboardView(),
+                )
+              : context.watch<LayoutViewModel>().bottomBarIndex == BottomBarIndex.payment
+              ? const PaymentView()
+              : const DashboardView(),
 
-              ///Bottom Navigation Bar
-              AnimatedOpacity(
-                duration: const Duration(milliseconds: 300),
-                opacity: context.watch<DashboardViewModel>().settings || context.watch<DashboardViewModel>().timelinePage
-                 || context.watch<PaymentViewModel>().showSendMoneyView || context.watch<PaymentViewModel>().showReceiveMoneyView
-                    ? 0
-                    : 1,
-                child: Theme(
-                  data: ThemeData(
-                    splashColor: Colors.transparent,
-                    dividerColor: Colors.transparent,
-                  ),
-                  child: SizedBox(
-                    height: context.watch<DashboardViewModel>().bottomNavbarHeight,
-                    child: BottomNavigationBar(
-                      currentIndex: 0,
-                      elevation: 0,
-                      showSelectedLabels: false,
-                      showUnselectedLabels: false,
-                      enableFeedback: false,
-                      backgroundColor: context.watch<LayoutViewModel>().showMainMenu
-                          ? Colors.black26
-                          : Colors.white,
-                      onTap: (int value) {
-                        ///Deactivate bottom nav bar when menu is open
-                        if(!context.read<LayoutViewModel>().showMainMenu || value == 1) {
-                          onTap(value, context.read<LayoutViewModel>());
-                        }
-                      },
-                      type: BottomNavigationBarType.fixed,
-                      items: [
-                        const BottomNavigationBarItem(
-                          label: "Home",
-                          icon: SVGImage(assetPath: "assets/icons/home.svg"),
-                        ),
-                        BottomNavigationBarItem(
-                          label: "Main",
-                          icon: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              const SVGImage(assetPath: "assets/icons/mainButton.svg"),
-                              context.watch<LayoutViewModel>().showMainMenu
-                                    ? Container(
-                                        padding: const EdgeInsets.all(16),
-                                        decoration: const BoxDecoration(
-                                          color: Colors.white,
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: const Icon(Icons.close, color: primaryButtonColor),
-                                      )
-                                    : const SizedBox(),
-                            ],
-                          ),
-                        ),
+          ///Bottom Navigation Bar
+          AnimatedOpacity(
+            duration: const Duration(milliseconds: 300),
+            opacity: context.watch<DashboardViewModel>().settings || context.watch<DashboardViewModel>().timelinePage
+                || context.watch<PaymentViewModel>().showSendMoneyView || context.watch<PaymentViewModel>().showReceiveMoneyView
+                ? 0
+                : 1,
+            child: Theme(
+              data: ThemeData(
+                splashColor: Colors.transparent,
+                dividerColor: Colors.transparent,
+              ),
+              child: SizedBox(
+                height: context.watch<DashboardViewModel>().bottomNavbarHeight,
+                child: BottomNavigationBar(
+                  currentIndex: 0,
+                  elevation: 0,
+                  showSelectedLabels: false,
+                  showUnselectedLabels: false,
+                  enableFeedback: false,
+                  backgroundColor: context.watch<LayoutViewModel>().showMainMenu
+                      ? Colors.black26
+                      : Colors.white,
+                  onTap: (int value) {
+                    ///Deactivate bottom nav bar when menu is open
+                    if(!context.read<LayoutViewModel>().showMainMenu || value == 1) {
 
-                        const BottomNavigationBarItem(
-                          label: "Support",
-                          icon: SVGImage(assetPath: "assets/icons/headPhone.svg"),
-                        )
-                      ],
+                      ///Zoom out animation while coming back from main menu modules
+                      if(value == 0 && context.read<LayoutViewModel>().bottomBarIndex != BottomBarIndex.home) {
+                        context.read<LayoutViewModel>().zoomController.forward();
+                      }
+                      ///
+                      onTap(value, context.read<LayoutViewModel>());
+                    }
+                  },
+                  type: BottomNavigationBarType.fixed,
+                  items: [
+                    const BottomNavigationBarItem(
+                      label: "Home",
+                      icon: SVGImage(assetPath: "assets/icons/home.svg"),
                     ),
-                  ),
+                    BottomNavigationBarItem(
+                      label: "Main",
+                      icon: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          const SVGImage(assetPath: "assets/icons/mainButton.svg"),
+                          context.watch<LayoutViewModel>().showMainMenu
+                              ? Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(Icons.close, color: primaryButtonColor),
+                          )
+                              : const SizedBox(),
+                        ],
+                      ),
+                    ),
+
+                    const BottomNavigationBarItem(
+                      label: "Support",
+                      icon: SVGImage(assetPath: "assets/icons/headPhone.svg"),
+                    )
+                  ],
                 ),
               ),
-
-              ///Main Menu
-              context.watch<LayoutViewModel>().showMainMenu
-                  ? const MainMenuView()
-                  : const SizedBox(),
-            ],
+            ),
           ),
-        );
-      }
+
+          ///Main Menu
+          context.watch<LayoutViewModel>().showMainMenu
+              ? const MainMenuView()
+              : const SizedBox(),
+        ],
+      ),
     );
   }
 
