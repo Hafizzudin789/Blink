@@ -1,25 +1,26 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:blink/constant/app_color.dart';
+import 'package:blink/feature/payment/payment/payment_view_model.dart';
+import 'package:blink/feature/payment/send_money_to/send_money_view_model.dart';
 import 'package:blink/widgets/custom_svg_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../constant/constants.dart';
-import '../../utils/format_string_amout.dart';
-import 'payment_view_model.dart';
-import 'receive_money_view_model.dart';
+import '../../../constant/constants.dart';
+import '../../../utils/format_string_amout.dart';
 
-class ReceiveMoneyView extends StatefulWidget {
-  const ReceiveMoneyView({super.key});
+
+class SendMoneyView extends StatefulWidget {
+  const SendMoneyView({super.key});
 
   @override
-  State<ReceiveMoneyView> createState() => _ReceiveMoneyViewState();
+  State<SendMoneyView> createState() => _SendMoneyViewState();
 }
 
-class _ReceiveMoneyViewState extends State<ReceiveMoneyView> {
+class _SendMoneyViewState extends State<SendMoneyView> {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<ReceiveMoneyViewModel>(
-      create: (_) => ReceiveMoneyViewModel(),
+    return ChangeNotifierProvider<SendMoneyViewModel>(
+      create: (_) => SendMoneyViewModel(),
       builder: (context, child) {
         return Scaffold(
           body: Container(
@@ -28,18 +29,18 @@ class _ReceiveMoneyViewState extends State<ReceiveMoneyView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                context.watch<PaymentViewModel>().receiveFrom !=null
-                    ? const CircleAvatar(
-                        backgroundImage: AssetImage("assets/dummy/person.jpg"),
+                context.watch<PaymentViewModel>().sendTo !=null
+                    ? CircleAvatar(
+                        backgroundImage: AssetImage(context.watch<PaymentViewModel>().sendTo!.image),
                         radius: 28,
                       )
                     : const SizedBox(height: 56),
-                Text(context.watch<PaymentViewModel>().receiveFrom != null?"Request money from":"Request money", style: const TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w400),),
-                context.watch<PaymentViewModel>().receiveFrom !=null
-                    ? Text(context.watch<PaymentViewModel>().receiveFrom!.name, style: const TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600),)
+                Text(context.watch<PaymentViewModel>().sendTo !=null?"Send money to":"Send money", style: const TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w400),),
+                context.watch<PaymentViewModel>().sendTo != null
+                    ? Text(context.watch<PaymentViewModel>().sendTo!.name, style: const TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600),)
                     : const SizedBox(),
 
-                context.watch<PaymentViewModel>().receiveFrom !=null
+                context.watch<PaymentViewModel>().sendTo !=null
                     ? Container(
                         margin: const EdgeInsets.symmetric(vertical: 16),
                         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -67,7 +68,7 @@ class _ReceiveMoneyViewState extends State<ReceiveMoneyView> {
 
                 _actualBalance(),
 
-                _keyPad(context.read<ReceiveMoneyViewModel>()),
+                _keyPad(context.read<SendMoneyViewModel>()),
               ],
             ),
           ),
@@ -77,40 +78,37 @@ class _ReceiveMoneyViewState extends State<ReceiveMoneyView> {
   }
 
   Widget _amountTextField(BuildContext context) {
-    return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.08,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Row(
-          children: [
-            const SizedBox(width: 50),
-            Expanded(
-              child: AutoSizeText.rich(
-                TextSpan(
-                    //text: formatStringToAmount(context.watch<ReceiveMoneyViewModel>().actualAmount),
-                    text: context.watch<ReceiveMoneyViewModel>().actualAmount,
-                    children: const [
-                      TextSpan(
-                        text: " JOD",
-                        style: TextStyle(fontSize: 14, color: Color(0XFFBCBCBC), fontWeight: FontWeight.w700),
-                      ),
-                    ]
-                ),
-                style: const TextStyle(fontSize: 32, color: Colors.black, fontWeight: FontWeight.w700),
-                minFontSize: 20,
-                maxLines: 1,
-                textAlign: TextAlign.center,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
+      child: Row(
+        children: [
+          const SizedBox(width: 50),
+          Expanded(
+            child: AutoSizeText.rich(
+              TextSpan(
+                //text: formatStringToAmount(context.watch<SendMoneyViewModel>().actualAmount),
+                text: context.watch<SendMoneyViewModel>().actualAmount,
+                children: const [
+                  TextSpan(
+                    text: " JOD",
+                    style: TextStyle(fontSize: 14, color: Color(0XFFBCBCBC), fontWeight: FontWeight.w700),
+                  ),
+                ]
               ),
+              style: const TextStyle(fontSize: 32, color: Colors.black, fontWeight: FontWeight.w700),
+              minFontSize: 20,
+              maxLines: 1,
+              textAlign: TextAlign.center,
             ),
-            InkWell(
-              splashColor: Colors.transparent,
-              highlightColor: Colors.transparent,
-              onTap: () {
-                context.read<ReceiveMoneyViewModel>().removeAmount();
-              },
-              child: const SVGImage(assetPath: "assets/icons/closeBack.svg", width: 20)),
-          ],
-        ),
+          ),
+          InkWell(
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            onTap: () {
+              context.read<SendMoneyViewModel>().removeAmount();
+            },
+            child: const SVGImage(assetPath: "assets/icons/closeBack.svg", width: 20)),
+        ],
       ),
     );
   }
@@ -119,6 +117,7 @@ class _ReceiveMoneyViewState extends State<ReceiveMoneyView> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12.0),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           const Text("Actual Balance", style: TextStyle(color: gray400Color, fontSize: 10, fontWeight: FontWeight.w600),),
           Text.rich(
@@ -138,7 +137,7 @@ class _ReceiveMoneyViewState extends State<ReceiveMoneyView> {
     );
   }
 
-  Widget _keyPad(ReceiveMoneyViewModel viewModel) {
+  Widget _keyPad(SendMoneyViewModel viewModel) {
     return Flexible(
       child: GridView.count(
         shrinkWrap: true,
@@ -176,18 +175,21 @@ class _ReceiveMoneyViewState extends State<ReceiveMoneyView> {
     );
   }
 
-  Widget _number(int number, ReceiveMoneyViewModel viewModel) {
-    return InkWell(
-      splashColor: Colors.transparent,
-      highlightColor: Colors.transparent,
-      onTap: () {
-        viewModel.editAmount("$number");
-      },
-      child: Center(child: Text("$number", style: const TextStyle(color: Colors.black, fontSize: 28, fontWeight: FontWeight.w400),)),
+  Widget _number(int number, SendMoneyViewModel viewModel) {
+    return Container(
+      color: Colors.white,
+      child: InkWell(
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        onTap: () {
+          viewModel.editAmount("$number");
+        },
+        child: Center(child: Text("$number", style: const TextStyle(color: Colors.black, fontSize: 28, fontWeight: FontWeight.w400),)),
+      ),
     );
   }
 
-  Widget _dot(String value, ReceiveMoneyViewModel viewModel) {
+  Widget _dot(String value, SendMoneyViewModel viewModel) {
     return InkWell(
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,

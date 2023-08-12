@@ -139,7 +139,6 @@ class _DashboardViewState extends State<DashboardView> with TickerProviderStateM
                 ),
                 builder: (context, child) {
                   return Transform.translate(
-                    //offset: Offset(0, context.read<DashboardViewModel>().animation.value* (-MediaQuery.of(context).size.height*0.65)),
                     offset: Offset(0, context.read<DashboardViewModel>().animation.value* (-MediaQuery.of(context).size.height*0.7)),
                     child: Transform.scale(
                       scale: context.read<DashboardViewModel>().scaleAnimationController.value,

@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
 import '../dashboard/dashboard_view_model.dart';
-import '../payment/payment_view_model.dart';
+import '../payment/payment/payment_view_model.dart';
 
 
 enum BottomBarIndex {

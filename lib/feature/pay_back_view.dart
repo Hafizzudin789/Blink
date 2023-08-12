@@ -1,6 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:blink/constant/app_color.dart';
-import 'package:blink/feature/payment/send_money_view_model.dart';
+import 'package:blink/feature/payment/send_money_to/send_money_view_model.dart';
 import 'package:blink/widgets/custom_svg_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

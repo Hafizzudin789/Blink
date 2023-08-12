@@ -9,10 +9,12 @@ class ElevatedCustomButton extends StatelessWidget {
   final Color foregroundColor;
   final double fontSize;
   final VoidCallback? onTap;
+  final double buttonWidth;
   const ElevatedCustomButton({super.key, required this.label, this.buttonColor = Colors.black,
     this.foregroundColor = Colors.white,
     this.buttonBorderColor = lightPinkColor,
     this.fontSize = 12,
+    this.buttonWidth = 150,
     this.onTap,
   });
 
@@ -23,7 +25,7 @@ class ElevatedCustomButton extends StatelessWidget {
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,
       child: Container(
-        width: 150,
+        width: buttonWidth,
         height: 48,
         alignment: Alignment.center,
         decoration: BoxDecoration(

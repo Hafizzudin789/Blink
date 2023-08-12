@@ -1,8 +1,8 @@
 import 'package:blink/feature/dashboard/dashboard_view_model.dart';
 import 'package:flutter/material.dart';
 
-import '../../constant/constants.dart';
-import '../../data.dart';
+import '../../../constant/constants.dart';
+import '../../../data.dart';
 
 class PaymentViewModel extends ChangeNotifier {
 

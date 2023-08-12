@@ -1,8 +1,8 @@
 import 'package:blink/feature/layout/layout_view_model.dart';
 import 'package:blink/feature/dashboard/dashboard_view_model.dart';
 import 'package:blink/feature/layout/main_menu_view.dart';
-import 'package:blink/feature/payment/payment_view.dart';
-import 'package:blink/feature/payment/payment_view_model.dart';
+import 'package:blink/feature/payment/payment/payment_view.dart';
+import 'package:blink/feature/payment/payment/payment_view_model.dart';
 import 'package:blink/widgets/custom_svg_image.dart';
 import 'package:blink/feature/dashboard/dashboard_view.dart';
 import 'package:flutter/material.dart';

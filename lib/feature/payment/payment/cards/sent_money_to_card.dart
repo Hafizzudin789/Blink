@@ -1,12 +1,13 @@
 import 'package:blink/feature/dashboard/dashboard_view_model.dart';
-import 'package:blink/feature/payment/payment_view_model.dart';
+import 'package:blink/feature/payment/payment/payment_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../constant/app_color.dart';
-import '../../../data.dart';
-import '../../../widgets/custom_icon_button.dart';
-import '../../../widgets/custom_svg_image.dart';
-import '../../../widgets/elevated_button.dart';
+import '../../../../constant/app_color.dart';
+import '../../../../data.dart';
+import '../../../../widgets/custom_icon_button.dart';
+import '../../../../widgets/custom_svg_image.dart';
+import '../../../../widgets/elevated_button.dart';
+
 
 class SendMoneyToCard extends StatelessWidget {
   final PaymentViewModel readPaymentViewModel;

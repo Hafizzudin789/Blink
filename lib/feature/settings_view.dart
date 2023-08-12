@@ -28,7 +28,7 @@ class _SettingsViewState extends State<SettingsView> {
       body: Container(
         margin: EdgeInsets.only(top: (MediaQuery.of(context).size.height * 0.25)-bottomBarHeight, bottom: 30),
         child: FadingEdgeScrollView.fromScrollView(
-          shouldDisposeScrollController: true,
+          // shouldDisposeScrollController: true,
           gradientFractionOnStart: 0.35,
           gradientFractionOnEnd: 0.2,
           child: ListView(

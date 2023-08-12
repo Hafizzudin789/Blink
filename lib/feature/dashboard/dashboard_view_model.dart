@@ -70,7 +70,6 @@ class DashboardViewModel extends ChangeNotifier {
       changeBottomNavbarHeight(bottomBarHeight);
       animateReverseSettingsPage();
     }
-
     settings = value;
     notifyListeners();
   }

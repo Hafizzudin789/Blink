@@ -1,15 +1,17 @@
 import 'package:blink/feature/dashboard/dashboard_view_model.dart';
-import 'package:blink/feature/payment/payment_view_model.dart';
-import 'package:blink/feature/payment/receive_money_view.dart';
-import 'package:blink/feature/payment/send_money_view.dart';
+import 'package:blink/feature/payment/payment/cards/post_paid_card.dart';
+import 'package:blink/feature/payment/payment/cards/pre_paid_card.dart';
+import 'package:blink/feature/payment/payment/payment_view_model.dart';
+import 'package:blink/feature/payment/request_money_from/receive_money_view.dart';
+import 'package:blink/feature/payment/send_money_to/send_money_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:math' as math;
-import '../../constant/app_color.dart';
-import '../../constant/constants.dart';
-import '../../widgets/custom_svg_image.dart';
-import 'widget/request_money_from_card.dart';
-import 'widget/sent_money_to_card.dart';
+import '../../../constant/app_color.dart';
+import '../../../constant/constants.dart';
+import '../../../widgets/custom_svg_image.dart';
+import 'cards/request_money_from_card.dart';
+import 'cards/sent_money_to_card.dart';
 
 
 class PaymentView extends StatefulWidget {
@@ -160,7 +162,7 @@ class _PaymentViewState extends State<PaymentView> with TickerProviderStateMixin
         alignment: Alignment.topCenter,
         children: [
           PageView.builder(
-            itemCount: 2,
+            itemCount: 4,
             controller: pageController,
             ///If SendMoneyView page or ReceiveMoneyView page is active do not scroll horizontal (swipe)
             physics: watchPaymentViewModel.showSendMoneyView || watchPaymentViewModel.showReceiveMoneyView
@@ -224,11 +226,7 @@ class _PaymentViewState extends State<PaymentView> with TickerProviderStateMixin
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,
               onTap: () {
-                if(pageViewIndex == 0) {
-                  readPaymentViewModel.goToSendMoneyView(!readPaymentViewModel.showSendMoneyView, context.read<DashboardViewModel>());
-                } else {
-                  readPaymentViewModel.goToReceiveMoneyView(!readPaymentViewModel.showReceiveMoneyView, context.read<DashboardViewModel>());
-                }
+                _onClick(readPaymentViewModel);
               },
               child: AnimatedBuilder(
                 animation: pageController,
@@ -274,7 +272,11 @@ class _PaymentViewState extends State<PaymentView> with TickerProviderStateMixin
                     crossFadeState: watchPaymentViewModel.showSendMoneyView || watchPaymentViewModel.showReceiveMoneyView
                         ? CrossFadeState.showFirst:CrossFadeState.showSecond,
                     firstChild: const SVGImage(assetPath: "assets/icons/down.svg"),
-                    secondChild: const Text("New Payment", style: TextStyle(color: primaryButtonColor, fontSize: 12, fontWeight: FontWeight.w600),),
+                    secondChild: Text(pageViewIndex == 2
+                        ? "New Postpaid Bill"
+                        : pageViewIndex == 3
+                            ? "New Prepaid Bill"
+                            : "New Payment", style: const TextStyle(color: primaryButtonColor, fontSize: 12, fontWeight: FontWeight.w600),),
                   ),
                 ),
               ),
@@ -288,7 +290,11 @@ class _PaymentViewState extends State<PaymentView> with TickerProviderStateMixin
   _paymentCard(int index, PaymentViewModel readPaymentViewModel) {
     return index == 0
         ? SendMoneyToCard(readPaymentViewModel: readPaymentViewModel)
-        : RequestMoneyFromCard(readPaymentViewModel: readPaymentViewModel);
+        : index == 1
+          ? RequestMoneyFromCard(readPaymentViewModel: readPaymentViewModel)
+          : index == 2
+              ? PostPaidCard(readPaymentViewModel: readPaymentViewModel)
+              : PrePaidCard(readPaymentViewModel: readPaymentViewModel);
   }
 
   _pageViewIndicator(PaymentViewModel watchPaymentViewModel) {
@@ -325,5 +331,18 @@ class _PaymentViewState extends State<PaymentView> with TickerProviderStateMixin
           : CrossFadeState.showSecond,
       duration: const Duration(milliseconds: 500),
     );
+  }
+
+
+  _onClick(PaymentViewModel readPaymentViewModel) {
+    if(pageViewIndex == 0) {
+      readPaymentViewModel.goToSendMoneyView(!readPaymentViewModel.showSendMoneyView, context.read<DashboardViewModel>());
+    } else if(pageViewIndex == 1) {
+      readPaymentViewModel.goToReceiveMoneyView(!readPaymentViewModel.showReceiveMoneyView, context.read<DashboardViewModel>());
+    } else if (pageViewIndex == 2) {
+
+    } else if(pageViewIndex == 3) {
+
+    }
   }
 }
