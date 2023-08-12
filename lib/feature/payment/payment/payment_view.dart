@@ -26,7 +26,7 @@ class _PaymentViewState extends State<PaymentView> with TickerProviderStateMixin
   int pageViewIndex = 0;
   late PageController pageController;
 
-  final List _paymentCardCount = [1,2]; ///Number of cards to horizontally scroll
+  final List _paymentCardCount = [1,2, 3, 4]; ///Number of cards to horizontally scroll
 
 
   late AnimationController _zoomController;

@@ -1,7 +1,9 @@
 import 'package:blink/feature/payment/payment/payment_view_model.dart';
+import 'package:blink/feature/payment/prepaid_bill/pre_paid_bills_history.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../../../constant/app_color.dart';
+import '../../../../utils/navigation_transitions.dart';
 import '../../../../widgets/custom_icon_button.dart';
 import '../../../../widgets/elevated_button.dart';
 
@@ -31,7 +33,7 @@ class PrePaidCard extends StatelessWidget {
               ),
               CustomIconButton(
                 onTap: () {
-
+                  Navigator.of(context).push(slideBottomToTop(nextPage: const PrePaidBillsHistory()));
                 },
                 svgIconPath: "assets/icons/history.svg",
                 buttonColor: blackColor,

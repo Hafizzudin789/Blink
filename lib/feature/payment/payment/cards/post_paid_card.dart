@@ -2,8 +2,10 @@ import 'package:blink/feature/payment/payment/payment_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../constant/app_color.dart';
+import '../../../../utils/navigation_transitions.dart';
 import '../../../../widgets/custom_icon_button.dart';
 import '../../../../widgets/elevated_button.dart';
+import '../../postpaid_bill/post_paid_bills_history.dart';
 
 
 class PostPaidCard extends StatelessWidget {
@@ -31,7 +33,7 @@ class PostPaidCard extends StatelessWidget {
               ),
               CustomIconButton(
                 onTap: () {
-
+                  Navigator.of(context).push(slideBottomToTop(nextPage: const PostPaidBillsHistory()));
                 },
                 svgIconPath: "assets/icons/history.svg",
                 buttonColor: blackColor,
