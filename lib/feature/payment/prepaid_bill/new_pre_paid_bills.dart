@@ -5,14 +5,14 @@ import '../../../constant/app_color.dart';
 import '../../../constant/constants.dart';
 
 
-class NewPostPaidBills extends StatefulWidget {
-  const NewPostPaidBills({super.key});
+class NewPrePaidBills extends StatefulWidget {
+  const NewPrePaidBills({super.key});
 
   @override
-  State<NewPostPaidBills> createState() => _NewPostPaidBillsState();
+  State<NewPrePaidBills> createState() => _NewPrePaidBillsState();
 }
 
-class _NewPostPaidBillsState extends State<NewPostPaidBills> {
+class _NewPrePaidBillsState extends State<NewPrePaidBills> {
 
 
   @override
@@ -22,7 +22,7 @@ class _NewPostPaidBillsState extends State<NewPostPaidBills> {
         margin: EdgeInsets.only(top: (MediaQuery.of(context).size.height * 0.25)-bottomBarHeight, bottom: 20),
         child: ListView(
           children: [
-            const Text("New Postpaid Bill", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400, color: Colors.black), textAlign: TextAlign.center,),
+            const Text("New Prepaid Bill", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400, color: Colors.black), textAlign: TextAlign.center,),
             const SizedBox(height: 16),
             _searchBar(),
             const SizedBox(height: 16),

@@ -1,8 +1,8 @@
 import 'package:blink/widgets/custom_svg_image.dart';
 import 'package:flutter/material.dart';
-// import 'package:provider/provider.dart';
+import 'package:provider/provider.dart';
 import '../../../constant/app_color.dart';
-// import '../../dashboard/dashboard_view_model.dart';
+import '../payment/payment_view_model.dart';
 
 
 class PrePaidBillsHistory extends StatefulWidget {
@@ -17,7 +17,7 @@ class _PrePaidBillsHistoryState extends State<PrePaidBillsHistory> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        //context.read<DashboardViewModel>().animateReverseTransactionPage();
+        context.read<PaymentViewModel>().animateReverseUpAndScalePage();
         return true;
       },
       child: Scaffold(
@@ -153,7 +153,7 @@ class _PrePaidBillsHistoryState extends State<PrePaidBillsHistory> {
                       top: 0,
                       child: InkWell(
                         onTap: () {
-                         // context.read<DashboardViewModel>().animateReverseTransactionPage();
+                          context.read<PaymentViewModel>().animateReverseUpAndScalePage();
                           Navigator.pop(context);
                         },
                         child: Container(

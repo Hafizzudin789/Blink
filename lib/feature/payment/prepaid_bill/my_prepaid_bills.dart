@@ -1,10 +1,11 @@
 import 'package:blink/widgets/custom_svg_image.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 // import 'package:provider/provider.dart';
 import '../../../constant/app_color.dart';
 import '../../../data.dart';
 import '../../../widgets/icon_widget.dart';
-// import '../../dashboard/dashboard_view_model.dart';
+import '../payment/payment_view_model.dart';
 
 
 class MyPrePaidBills extends StatefulWidget {
@@ -19,7 +20,7 @@ class _MyPrePaidBillsState extends State<MyPrePaidBills> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        //context.read<DashboardViewModel>().animateReverseTransactionPage();
+        context.read<PaymentViewModel>().animateReverseUpAndScalePage();
         return true;
       },
       child: Scaffold(
@@ -90,7 +91,7 @@ class _MyPrePaidBillsState extends State<MyPrePaidBills> {
                                 leading: IconWidget(svgImage: bill.iconPath),
                                 title: Text(bill.title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),),
                                 subtitle: Text(bill.subTitle, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400)),
-                                trailing: Icon(Icons.arrow_forward_ios_rounded),
+                                trailing: const Icon(Icons.arrow_forward_ios_rounded),
                               );
                             },
                             separatorBuilder: (BuildContext context, int index) => const Divider(color: dividerColor,),
@@ -102,7 +103,7 @@ class _MyPrePaidBillsState extends State<MyPrePaidBills> {
                       top: 0,
                       child: InkWell(
                         onTap: () {
-                          // context.read<DashboardViewModel>().animateReverseTransactionPage();
+                          context.read<PaymentViewModel>().animateReverseUpAndScalePage();
                           Navigator.pop(context);
                         },
                         child: Container(

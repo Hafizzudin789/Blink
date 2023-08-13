@@ -1,13 +1,14 @@
+import 'package:blink/feature/payment/payment/payment_view_model.dart';
 import 'package:blink/widgets/custom_button.dart';
 import 'package:blink/widgets/custom_svg_image.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 // import 'package:provider/provider.dart';
 import '../../../constant/app_color.dart';
 import '../../../data.dart';
 import '../../../widgets/check_box.dart';
 import '../../../widgets/icon_widget.dart';
 import 'package:collection/collection.dart';
-// import '../../dashboard/dashboard_view_model.dart';
 
 
 class MyDueBills extends StatefulWidget {
@@ -33,7 +34,7 @@ class _MyDueBillsState extends State<MyDueBills> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        //context.read<DashboardViewModel>().animateReverseTransactionPage();
+        context.read<PaymentViewModel>().animateReverseUpAndScalePage();
         return true;
       },
       child: Scaffold(
@@ -147,7 +148,7 @@ class _MyDueBillsState extends State<MyDueBills> {
                       top: 0,
                       child: InkWell(
                         onTap: () {
-                          // context.read<DashboardViewModel>().animateReverseTransactionPage();
+                          context.read<PaymentViewModel>().animateReverseUpAndScalePage();
                           Navigator.pop(context);
                         },
                         child: Container(

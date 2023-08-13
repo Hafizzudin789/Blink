@@ -2,6 +2,8 @@ import 'package:blink/feature/dashboard/dashboard_view_model.dart';
 import 'package:blink/feature/payment/payment/cards/post_paid_card.dart';
 import 'package:blink/feature/payment/payment/cards/pre_paid_card.dart';
 import 'package:blink/feature/payment/payment/payment_view_model.dart';
+import 'package:blink/feature/payment/postpaid_bill/new_post_paid_bills.dart';
+import 'package:blink/feature/payment/prepaid_bill/new_pre_paid_bills.dart';
 import 'package:blink/feature/payment/request_money_from/receive_money_view.dart';
 import 'package:blink/feature/payment/send_money_to/send_money_view.dart';
 import 'package:flutter/material.dart';
@@ -102,6 +104,8 @@ class _PaymentViewState extends State<PaymentView> with TickerProviderStateMixin
             children: [
               ///SendMoneyView page
               ///ReceiveMoneyView page
+              ///NewPostPaid page
+              ///NewPrePaid page
               AnimatedSwitcher(
                 duration: const Duration(milliseconds: 500),
                 reverseDuration: const Duration(milliseconds: 400),
@@ -110,8 +114,12 @@ class _PaymentViewState extends State<PaymentView> with TickerProviderStateMixin
                 child: watchPaymentViewModel.showSendMoneyView
                     ? const SendMoneyView()
                     : watchPaymentViewModel.showReceiveMoneyView
-                    ? const ReceiveMoneyView()
-                    : const SizedBox(),
+                      ? const ReceiveMoneyView()
+                      : watchPaymentViewModel.showNewPostPaidBillsView
+                          ? const NewPostPaidBills()
+                          : watchPaymentViewModel.showNewPrePaidBillsView
+                              ? const NewPrePaidBills()
+                              : const SizedBox(),
               ),
               AnimatedBuilder(
                 animation: readPaymentViewModel.translateUpController,
@@ -145,7 +153,10 @@ class _PaymentViewState extends State<PaymentView> with TickerProviderStateMixin
                 builder: (context, child) {
                   return Transform.translate(
                     offset: Offset(0, readPaymentViewModel.translateUpAnimation.value * (-MediaQuery.of(context).size.height*0.7)),
-                    child: child,
+                    child: Transform.scale(
+                      scale: context.read<PaymentViewModel>().scaleController.value,
+                      child: child,
+                    ),
                   );
                 },
               ),
@@ -165,7 +176,7 @@ class _PaymentViewState extends State<PaymentView> with TickerProviderStateMixin
             itemCount: 4,
             controller: pageController,
             ///If SendMoneyView page or ReceiveMoneyView page is active do not scroll horizontal (swipe)
-            physics: watchPaymentViewModel.showSendMoneyView || watchPaymentViewModel.showReceiveMoneyView
+            physics: watchPaymentViewModel.showDownArrowButton
                 ? const NeverScrollableScrollPhysics()
                 : const ClampingScrollPhysics(),
             onPageChanged: (int value) {
@@ -248,10 +259,10 @@ class _PaymentViewState extends State<PaymentView> with TickerProviderStateMixin
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 500),
                   curve: Curves.easeInOut,
-                  width: watchPaymentViewModel.showSendMoneyView || watchPaymentViewModel.showReceiveMoneyView
+                  width: watchPaymentViewModel.showDownArrowButton
                       ? 48
                       : 150,
-                  height: watchPaymentViewModel.showSendMoneyView || watchPaymentViewModel.showReceiveMoneyView
+                  height: watchPaymentViewModel.showDownArrowButton
                       ? 48
                       : 44,
                   alignment: Alignment.center,
@@ -269,8 +280,9 @@ class _PaymentViewState extends State<PaymentView> with TickerProviderStateMixin
                     firstCurve: Curves.easeIn,
                     secondCurve: Curves.easeIn,
                     alignment: Alignment.center,
-                    crossFadeState: watchPaymentViewModel.showSendMoneyView || watchPaymentViewModel.showReceiveMoneyView
-                        ? CrossFadeState.showFirst:CrossFadeState.showSecond,
+                    crossFadeState: watchPaymentViewModel.showDownArrowButton
+                        ? CrossFadeState.showFirst
+                        : CrossFadeState.showSecond,
                     firstChild: const SVGImage(assetPath: "assets/icons/down.svg"),
                     secondChild: Text(pageViewIndex == 2
                         ? "New Postpaid Bill"
@@ -298,7 +310,8 @@ class _PaymentViewState extends State<PaymentView> with TickerProviderStateMixin
   }
 
   _pageViewIndicator(PaymentViewModel watchPaymentViewModel) {
-    ///Hide indicator when settings page is active
+    ///Hide indicator when payment receive/send page is active
+    ///hide indicator when new pre/post paid bills page is active
     return AnimatedCrossFade(
       firstChild: const SizedBox(),
       secondChild: Padding(
@@ -326,7 +339,7 @@ class _PaymentViewState extends State<PaymentView> with TickerProviderStateMixin
           ],
         ),
       ),
-      crossFadeState: watchPaymentViewModel.showSendMoneyView || watchPaymentViewModel.showReceiveMoneyView
+      crossFadeState: watchPaymentViewModel.showDownArrowButton
           ? CrossFadeState.showFirst
           : CrossFadeState.showSecond,
       duration: const Duration(milliseconds: 500),
@@ -340,9 +353,9 @@ class _PaymentViewState extends State<PaymentView> with TickerProviderStateMixin
     } else if(pageViewIndex == 1) {
       readPaymentViewModel.goToReceiveMoneyView(!readPaymentViewModel.showReceiveMoneyView, context.read<DashboardViewModel>());
     } else if (pageViewIndex == 2) {
-
+      readPaymentViewModel.goToNewPostPaidBillView(!readPaymentViewModel.showNewPostPaidBillsView, context.read<DashboardViewModel>());
     } else if(pageViewIndex == 3) {
-
+      readPaymentViewModel.goToNewPrePaidBillView(!readPaymentViewModel.showNewPrePaidBillsView, context.read<DashboardViewModel>());
     }
   }
 }

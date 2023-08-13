@@ -1,10 +1,12 @@
 import 'package:blink/utils/capitalize.dart';
 import 'package:blink/widgets/custom_svg_image.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 // import 'package:provider/provider.dart';
 import '../../../constant/app_color.dart';
 import '../../../data.dart';
 import '../../../widgets/icon_widget.dart';
+import '../payment/payment_view_model.dart';
 // import '../../dashboard/dashboard_view_model.dart';
 
 
@@ -20,7 +22,7 @@ class _PostPaidBillsHistoryState extends State<PostPaidBillsHistory> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        //context.read<DashboardViewModel>().animateReverseTransactionPage();
+        context.read<PaymentViewModel>().animateReverseUpAndScalePage();
         return true;
       },
       child: Scaffold(
@@ -86,7 +88,7 @@ class _PostPaidBillsHistoryState extends State<PostPaidBillsHistory> {
                                       physics: const NeverScrollableScrollPhysics(),
                                       itemBuilder: (context, index) {
                                         return Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                                          padding: const EdgeInsets.symmetric(horizontal: 16),
                                           child: Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
@@ -96,7 +98,7 @@ class _PostPaidBillsHistoryState extends State<PostPaidBillsHistory> {
                                               ),
                                               Row(
                                                 children: [
-                                                  const IconWidget(svgImage: "assets/icons/add.svg"),
+                                                  const IconWidget(svgImage: "assets/icons/bill.svg"),
                                                   const SizedBox(width: 10),
                                                   Expanded(
                                                     child: Row(
@@ -176,7 +178,7 @@ class _PostPaidBillsHistoryState extends State<PostPaidBillsHistory> {
                       top: 0,
                       child: InkWell(
                         onTap: () {
-                          // context.read<DashboardViewModel>().animateReverseTransactionPage();
+                          context.read<PaymentViewModel>().animateReverseUpAndScalePage();
                           Navigator.pop(context);
                         },
                         child: Container(
