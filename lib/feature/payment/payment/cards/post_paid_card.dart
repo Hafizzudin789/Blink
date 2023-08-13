@@ -1,4 +1,6 @@
 import 'package:blink/feature/payment/payment/payment_view_model.dart';
+import 'package:blink/feature/payment/postpaid_bill/my_due_bills.dart';
+import 'package:blink/feature/payment/postpaid_bill/my_postpaid_bills.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../constant/app_color.dart';
@@ -43,7 +45,6 @@ class PostPaidCard extends StatelessWidget {
             ],
           ),
 
-          // const SizedBox(height: 0),
 
           Flexible(
             child: Column(
@@ -82,21 +83,25 @@ class PostPaidCard extends StatelessWidget {
           Column(
             children: [
               ElevatedCustomButton(
+                onTap: () {
+                  Navigator.of(context).push(slideBottomToTop(nextPage: const MyPostPaidBills()));
+                },
                 label: "view my bills",
                 buttonColor: Colors.black,
                 buttonBorderColor: Colors.white,
                 foregroundColor: Colors.white,
                 buttonWidth: double.infinity,
-                onTap: () {},
               ),
               const SizedBox(height: 8),
               ElevatedCustomButton(
+                onTap: () {
+                  Navigator.of(context).push(slideBottomToTop(nextPage: const MyDueBills()));
+                },
                 label: "view and pay your due bills",
                 buttonColor: primaryButtonColor,
                 buttonBorderColor: Colors.transparent,
                 foregroundColor: Colors.white,
                 buttonWidth: double.infinity,
-                onTap: () {},
               ),
             ],
           ),

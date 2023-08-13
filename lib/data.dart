@@ -25,6 +25,30 @@ enum BillStatus {
   failed,
   success,
 }
+class PostPaidBill {
+  final String title;
+  final String subTitle;
+  final String iconPath;
+  final double dueAmount;
+
+  PostPaidBill({required this.title, required this.subTitle,
+    required this.iconPath, required this.dueAmount});
+}
+List<PostPaidBill> postPaidBills = [
+  PostPaidBill(title: "Electric Home", subTitle: "Jordan Electricity", iconPath: "assets/icons/electric.svg", dueAmount: 65.3),
+  PostPaidBill(title: "Home 2 Internet", subTitle: "Jordan Electricity", iconPath: "assets/icons/bill.svg", dueAmount: 73.3),
+  PostPaidBill(title: "My New number", subTitle: "Jordan Electricity", iconPath: "assets/icons/electric.svg", dueAmount: 65.3),
+  PostPaidBill(title: "Wife zein", subTitle: "Jordan Electricity", iconPath: "assets/icons/electric.svg", dueAmount: 89.3),
+  PostPaidBill(title: "Rental Home", subTitle: "Jordan Electricity", iconPath: "assets/icons/bill.svg", dueAmount: 78.3),
+  PostPaidBill(title: "Water Bill Home", subTitle: "Jordan Electricity", iconPath: "assets/icons/electric.svg", dueAmount: 65.3),
+  PostPaidBill(title: "Electric Home", subTitle: "Jordan Electricity", iconPath: "assets/icons/bill.svg", dueAmount: 65.3),
+  PostPaidBill(title: "Electric Home", subTitle: "Jordan Electricity", iconPath: "assets/icons/bill.svg", dueAmount: 78.3),
+  PostPaidBill(title: "Electric Home", subTitle: "Jordan Electricity", iconPath: "assets/icons/bill.svg", dueAmount: 109.3),
+  PostPaidBill(title: "Electric Home", subTitle: "Jordan Electricity", iconPath: "assets/icons/bill.svg", dueAmount: 65.3),
+];
+
+
+///Post paid bills data
 class Bill {
   final String title;
   final double amount;

@@ -6,6 +6,7 @@ import '../../../../constant/app_color.dart';
 import '../../../../utils/navigation_transitions.dart';
 import '../../../../widgets/custom_icon_button.dart';
 import '../../../../widgets/elevated_button.dart';
+import '../../prepaid_bill/my_prepaid_bills.dart';
 
 
 class PrePaidCard extends StatelessWidget {
@@ -84,7 +85,9 @@ class PrePaidCard extends StatelessWidget {
             buttonBorderColor: Colors.white,
             foregroundColor: Colors.white,
             buttonWidth: double.infinity,
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).push(slideBottomToTop(nextPage: const MyPrePaidBills()));
+            },
           ),
         ],
       ),
